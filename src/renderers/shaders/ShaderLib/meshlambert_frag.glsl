@@ -17,15 +17,15 @@ varying vec3 vLightFront;
 #include <uv2_pars_fragment>
 #include <map_pars_fragment>
 #include <alphamap_pars_fragment>
-#include <aomap_pars_fragment>
-#include <lightmap_pars_fragment>
-#include <emissivemap_pars_fragment>
-#include <envmap_pars_fragment>
+//#include <aomap_pars_fragment>
+//#include <lightmap_pars_fragment>
+//#include <emissivemap_pars_fragment>
+//#include <envmap_pars_fragment>
 #include <bsdfs>
 #include <lights_pars>
 #include <fog_pars_fragment>
-#include <shadowmap_pars_fragment>
-#include <shadowmask_pars_fragment>
+//#include <shadowmap_pars_fragment>
+//#include <shadowmask_pars_fragment>
 #include <specularmap_pars_fragment>
 #include <logdepthbuf_pars_fragment>
 #include <clipping_planes_pars_fragment>
@@ -49,7 +49,7 @@ void main() {
 	// accumulation
 	reflectedLight.indirectDiffuse = getAmbientLightIrradiance( ambientLightColor );
 
-	#include <lightmap_fragment>
+//	#include <lightmap_fragment>
 
 	reflectedLight.indirectDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb );
 
@@ -66,12 +66,12 @@ void main() {
 	reflectedLight.directDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb ) * getShadowMask();
 
 	// modulation
-	#include <aomap_fragment>
+//	#include <aomap_fragment>
 
 	vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + totalEmissiveRadiance;
 
 	#include <normal_flip>
-	#include <envmap_fragment>
+//	#include <envmap_fragment>
 
 	gl_FragColor = vec4( outgoingLight, diffuseColor.a );
 

@@ -37,22 +37,22 @@ function WebGLLights() {
 					};
 					break;
 
-				case 'SpotLight':
-					uniforms = {
-						position: new Vector3(),
-						direction: new Vector3(),
-						color: new Color(),
-						distance: 0,
-						coneCos: 0,
-						penumbraCos: 0,
-						decay: 0,
+				// case 'SpotLight':
+				// 	uniforms = {
+				// 		position: new Vector3(),
+				// 		direction: new Vector3(),
+				// 		color: new Color(),
+				// 		distance: 0,
+				// 		coneCos: 0,
+				// 		penumbraCos: 0,
+				// 		decay: 0,
 
-						shadow: false,
-						shadowBias: 0,
-						shadowRadius: 1,
-						shadowMapSize: new Vector2()
-					};
-					break;
+				// 		shadow: false,
+				// 		shadowBias: 0,
+				// 		shadowRadius: 1,
+				// 		shadowMapSize: new Vector2()
+				// 	};
+				// 	break;
 
 				case 'PointLight':
 					uniforms = {
@@ -68,23 +68,23 @@ function WebGLLights() {
 					};
 					break;
 
-				case 'HemisphereLight':
-					uniforms = {
-						direction: new Vector3(),
-						skyColor: new Color(),
-						groundColor: new Color()
-					};
-					break;
+				// case 'HemisphereLight':
+				// 	uniforms = {
+				// 		direction: new Vector3(),
+				// 		skyColor: new Color(),
+				// 		groundColor: new Color()
+				// 	};
+				// 	break;
 
-				case 'RectAreaLight':
-					uniforms = {
-						color: new Color(),
-						position: new Vector3(),
-						halfWidth: new Vector3(),
-						halfHeight: new Vector3()
-						// TODO (abelnation): set RectAreaLight shadow uniforms
-					};
-					break;
+				// case 'RectAreaLight':
+				// 	uniforms = {
+				// 		color: new Color(),
+				// 		position: new Vector3(),
+				// 		halfWidth: new Vector3(),
+				// 		halfHeight: new Vector3()
+				// 		// TODO (abelnation): set RectAreaLight shadow uniforms
+				// 	};
+				// 	break;
 
 			}
 

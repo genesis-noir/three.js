@@ -47,11 +47,11 @@
  *
  */
 
-import { CubeTexture } from '../../textures/CubeTexture';
+// import { CubeTexture } from '../../textures/CubeTexture';
 import { Texture } from '../../textures/Texture';
 
 var emptyTexture = new Texture();
-var emptyCubeTexture = new CubeTexture();
+// var emptyCubeTexture = new CubeTexture();
 
 // --- Base for inner nodes (including the root) ---
 
@@ -193,13 +193,13 @@ function setValueT1( gl, v, renderer ) {
 
 }
 
-function setValueT6( gl, v, renderer ) {
+// function setValueT6( gl, v, renderer ) {
 
-	var unit = renderer.allocTextureUnit();
-	gl.uniform1i( this.addr, unit );
-	renderer.setTextureCube( v || emptyCubeTexture, unit );
+// 	var unit = renderer.allocTextureUnit();
+// 	gl.uniform1i( this.addr, unit );
+// 	renderer.setTextureCube( v || emptyCubeTexture, unit );
 
-}
+// }
 
 // Integer / Boolean vectors or arrays thereof (always flat arrays)
 
@@ -223,7 +223,7 @@ function getSingularSetter( type ) {
 		case 0x8b5c: return setValue4fm; // _MAT4
 
 		case 0x8b5e: return setValueT1; // SAMPLER_2D
-		case 0x8b60: return setValueT6; // SAMPLER_CUBE
+		// case 0x8b60: return setValueT6; // SAMPLER_CUBE
 
 		case 0x1404: case 0x8b56: return setValue1i; // INT, BOOL
 		case 0x8b53: case 0x8b57: return setValue2iv; // _VEC2
@@ -296,20 +296,20 @@ function setValueT1a( gl, v, renderer ) {
 
 }
 
-function setValueT6a( gl, v, renderer ) {
+// function setValueT6a( gl, v, renderer ) {
 
-	var n = v.length,
-		units = allocTexUnits( renderer, n );
+// 	var n = v.length,
+// 		units = allocTexUnits( renderer, n );
 
-	gl.uniform1iv( this.addr, units );
+// 	gl.uniform1iv( this.addr, units );
 
-	for ( var i = 0; i !== n; ++ i ) {
+// 	for ( var i = 0; i !== n; ++ i ) {
 
-		renderer.setTextureCube( v[ i ] || emptyCubeTexture, units[ i ] );
+// 		renderer.setTextureCube( v[ i ] || emptyCubeTexture, units[ i ] );
 
-	}
+// 	}
 
-}
+// }
 
 // Helper to pick the right setter for a pure (bottom-level) array
 
@@ -327,7 +327,7 @@ function getPureArraySetter( type ) {
 		case 0x8b5c: return setValueM4a; // _MAT4
 
 		case 0x8b5e: return setValueT1a; // SAMPLER_2D
-		case 0x8b60: return setValueT6a; // SAMPLER_CUBE
+		// case 0x8b60: return setValueT6a; // SAMPLER_CUBE
 
 		case 0x1404: case 0x8b56: return setValue1iv; // INT, BOOL
 		case 0x8b53: case 0x8b57: return setValue2iv; // _VEC2

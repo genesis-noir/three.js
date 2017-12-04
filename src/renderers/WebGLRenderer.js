@@ -3,7 +3,7 @@ import { Matrix4 } from '../math/Matrix4';
 import { WebGLUniforms } from './webgl/WebGLUniforms';
 import { UniformsUtils } from './shaders/UniformsUtils';
 import { ShaderLib } from './shaders/ShaderLib';
-import { LensFlarePlugin } from './webgl/plugins/LensFlarePlugin';
+// import { LensFlarePlugin } from './webgl/plugins/LensFlarePlugin';
 import { SpritePlugin } from './webgl/plugins/SpritePlugin';
 import { WebGLShadowMap } from './webgl/WebGLShadowMap';
 import { ShaderMaterial } from '../materials/ShaderMaterial';
@@ -41,7 +41,7 @@ import { Color } from '../math/Color';
 
 function WebGLRenderer( parameters ) {
 
-	console.log( 'THREE.WebGLRenderer', REVISION );
+	console.log( 'THREE.WebGLRenderer', REVISION, '0.1' );
 
 	parameters = parameters || {};
 
@@ -349,7 +349,7 @@ function WebGLRenderer( parameters ) {
 	// Plugins
 
 	var spritePlugin = new SpritePlugin( this, sprites );
-	var lensFlarePlugin = new LensFlarePlugin( this, lensFlares );
+	// var lensFlarePlugin = new LensFlarePlugin( this, lensFlares );
 
 	// API
 
@@ -1247,7 +1247,7 @@ function WebGLRenderer( parameters ) {
 		// custom render plugins (post pass)
 
 		spritePlugin.render( scene, camera );
-		lensFlarePlugin.render( scene, camera, _currentViewport );
+		// lensFlarePlugin.render( scene, camera, _currentViewport );
 
 		// Generate mipmap if we're using any kind of mipmap filtering
 
@@ -2567,47 +2567,47 @@ function WebGLRenderer( parameters ) {
 
 	}() );
 
-	this.setTextureCube = ( function() {
+	// this.setTextureCube = ( function() {
 
-		var warned = false;
+	// 	var warned = false;
 
-		return function setTextureCube( texture, slot ) {
+	// 	return function setTextureCube( texture, slot ) {
 
-			// backwards compatibility: peel texture.texture
-			if ( texture && texture.isWebGLRenderTargetCube ) {
+	// 		// backwards compatibility: peel texture.texture
+	// 		if ( texture && texture.isWebGLRenderTargetCube ) {
 
-				if ( ! warned ) {
+	// 			if ( ! warned ) {
 
-					console.warn( "THREE.WebGLRenderer.setTextureCube: don't use cube render targets as textures. Use their .texture property instead." );
-					warned = true;
+	// 				console.warn( "THREE.WebGLRenderer.setTextureCube: don't use cube render targets as textures. Use their .texture property instead." );
+	// 				warned = true;
 
-				}
+	// 			}
 
-				texture = texture.texture;
+	// 			texture = texture.texture;
 
-			}
+	// 		}
 
-			// currently relying on the fact that WebGLRenderTargetCube.texture is a Texture and NOT a CubeTexture
-			// TODO: unify these code paths
-			if ( ( texture && texture.isCubeTexture ) ||
-				( Array.isArray( texture.image ) && texture.image.length === 6 ) ) {
+	// 		// currently relying on the fact that WebGLRenderTargetCube.texture is a Texture and NOT a CubeTexture
+	// 		// TODO: unify these code paths
+	// 		if ( ( texture && texture.isCubeTexture ) ||
+	// 			( Array.isArray( texture.image ) && texture.image.length === 6 ) ) {
 
-				// CompressedTexture can have Array in image :/
+	// 			// CompressedTexture can have Array in image :/
 
-				// this function alone should take care of cube textures
-				textures.setTextureCube( texture, slot );
+	// 			// this function alone should take care of cube textures
+	// 			textures.setTextureCube( texture, slot );
 
-			} else {
+	// 		} else {
 
-				// assumed: texture property of THREE.WebGLRenderTargetCube
+	// 			// assumed: texture property of THREE.WebGLRenderTargetCube
 
-				textures.setTextureCubeDynamic( texture, slot );
+	// 			textures.setTextureCubeDynamic( texture, slot );
 
-			}
+	// 		}
 
-		};
+	// 	};
 
-	}() );
+	// }() );
 
 	this.getCurrentRenderTarget = function() {
 
