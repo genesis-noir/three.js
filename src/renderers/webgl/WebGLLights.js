@@ -54,19 +54,19 @@ function WebGLLights() {
 				// 	};
 				// 	break;
 
-				case 'PointLight':
-					uniforms = {
-						position: new Vector3(),
-						color: new Color(),
-						distance: 0,
-						decay: 0,
+				// case 'PointLight':
+				// 	uniforms = {
+				// 		position: new Vector3(),
+				// 		color: new Color(),
+				// 		distance: 0,
+				// 		decay: 0,
 
-						shadow: false,
-						shadowBias: 0,
-						shadowRadius: 1,
-						shadowMapSize: new Vector2()
-					};
-					break;
+				// 		shadow: false,
+				// 		shadowBias: 0,
+				// 		shadowRadius: 1,
+				// 		shadowMapSize: new Vector2()
+				// 	};
+				// 	break;
 
 				// case 'HemisphereLight':
 				// 	uniforms = {

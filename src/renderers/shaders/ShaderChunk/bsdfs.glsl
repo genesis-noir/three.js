@@ -359,51 +359,51 @@ vec3 integrateLtcBrdfOverRect( const in GeometricContext geometry, const in mat3
 
 }
 
-vec3 Rect_Area_Light_Specular_Reflectance(
-		const in GeometricContext geometry,
-		const in vec3 lightPos, const in vec3 lightHalfWidth, const in vec3 lightHalfHeight,
-		const in float roughness,
-		const in sampler2D ltcMat, const in sampler2D ltcMag ) {
+// vec3 Rect_Area_Light_Specular_Reflectance(
+// 		const in GeometricContext geometry,
+// 		const in vec3 lightPos, const in vec3 lightHalfWidth, const in vec3 lightHalfHeight,
+// 		const in float roughness,
+// 		const in sampler2D ltcMat, const in sampler2D ltcMag ) {
 
-	vec3 rectPoints[4];
-	initRectPoints( lightPos, lightHalfWidth, lightHalfHeight, rectPoints );
+// 	vec3 rectPoints[4];
+// 	initRectPoints( lightPos, lightHalfWidth, lightHalfHeight, rectPoints );
 
-	vec2 uv = ltcTextureCoords( geometry, roughness );
+// 	vec2 uv = ltcTextureCoords( geometry, roughness );
 
-	vec4 brdfLtcApproxParams, t;
+// 	vec4 brdfLtcApproxParams, t;
 
-	brdfLtcApproxParams = texture2D( ltcMat, uv );
-	t = texture2D( ltcMat, uv );
+// 	brdfLtcApproxParams = texture2D( ltcMat, uv );
+// 	t = texture2D( ltcMat, uv );
 
-	float brdfLtcScalar = texture2D( ltcMag, uv ).a;
+// 	float brdfLtcScalar = texture2D( ltcMag, uv ).a;
 
-	// inv(M) matrix referenced by equation (6) in paper
-	mat3 brdfLtcApproxMat = mat3(
-		vec3(   1,   0, t.y ),
-		vec3(   0, t.z,   0 ),
-		vec3( t.w,   0, t.x )
-	);
+// 	// inv(M) matrix referenced by equation (6) in paper
+// 	mat3 brdfLtcApproxMat = mat3(
+// 		vec3(   1,   0, t.y ),
+// 		vec3(   0, t.z,   0 ),
+// 		vec3( t.w,   0, t.x )
+// 	);
 
-	vec3 specularReflectance = integrateLtcBrdfOverRect( geometry, brdfLtcApproxMat, rectPoints );
-	specularReflectance *= brdfLtcScalar;
+// 	vec3 specularReflectance = integrateLtcBrdfOverRect( geometry, brdfLtcApproxMat, rectPoints );
+// 	specularReflectance *= brdfLtcScalar;
 
-	return specularReflectance;
+// 	return specularReflectance;
 
-}
+// }
 
-vec3 Rect_Area_Light_Diffuse_Reflectance(
-		const in GeometricContext geometry,
-		const in vec3 lightPos, const in vec3 lightHalfWidth, const in vec3 lightHalfHeight ) {
+// vec3 Rect_Area_Light_Diffuse_Reflectance(
+// 		const in GeometricContext geometry,
+// 		const in vec3 lightPos, const in vec3 lightHalfWidth, const in vec3 lightHalfHeight ) {
 
-	vec3 rectPoints[4];
-	initRectPoints( lightPos, lightHalfWidth, lightHalfHeight, rectPoints );
+// 	vec3 rectPoints[4];
+// 	initRectPoints( lightPos, lightHalfWidth, lightHalfHeight, rectPoints );
 
-	mat3 diffuseBrdfMat = mat3(1);
-	vec3 diffuseReflectance = integrateLtcBrdfOverRect( geometry, diffuseBrdfMat, rectPoints );
+// 	mat3 diffuseBrdfMat = mat3(1);
+// 	vec3 diffuseReflectance = integrateLtcBrdfOverRect( geometry, diffuseBrdfMat, rectPoints );
 
-	return diffuseReflectance;
+// 	return diffuseReflectance;
 
-}
+// }
 // End RectArea BRDF
 
 // ref: https://www.unrealengine.com/blog/physically-based-shading-on-mobile - environmentBRDF for GGX on mobile

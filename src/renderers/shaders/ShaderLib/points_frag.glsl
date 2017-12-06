@@ -5,10 +5,10 @@ uniform float opacity;
 #include <packing>
 #include <color_pars_fragment>
 #include <map_particle_pars_fragment>
-#include <fog_pars_fragment>
-#include <shadowmap_pars_fragment>
-#include <logdepthbuf_pars_fragment>
-#include <clipping_planes_pars_fragment>
+// #include <fog_pars_fragment>
+// #include <shadowmap_pars_fragment>
+// #include <logdepthbuf_pars_fragment>
+// #include <clipping_planes_pars_fragment>
 
 void main() {
 
@@ -17,7 +17,7 @@ void main() {
 	vec3 outgoingLight = vec3( 0.0 );
 	vec4 diffuseColor = vec4( diffuse, opacity );
 
-	#include <logdepthbuf_fragment>
+	// #include <logdepthbuf_fragment>
 	#include <map_particle_fragment>
 	#include <color_fragment>
 	#include <alphatest_fragment>
@@ -27,8 +27,8 @@ void main() {
 	gl_FragColor = vec4( outgoingLight, diffuseColor.a );
 
 	#include <premultiplied_alpha_fragment>
-	#include <tonemapping_fragment>
-	#include <encodings_fragment>
-	#include <fog_fragment>
+	// #include <tonemapping_fragment>
+	// #include <encodings_fragment>
+	// #include <fog_fragment>
 
 }

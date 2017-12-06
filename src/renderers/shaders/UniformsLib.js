@@ -1,7 +1,7 @@
 import { Vector4 } from '../../math/Vector4';
 import { Color } from '../../math/Color';
-import { Vector2 } from '../../math/Vector2';
-import { DataTexture } from '../../textures/DataTexture';
+// import { Vector2 } from '../../math/Vector2';
+// import { DataTexture } from '../../textures/DataTexture';
 
 /**
  * Uniforms library for shared webgl shaders
@@ -17,75 +17,75 @@ var UniformsLib = {
 		map: { value: null },
 		offsetRepeat: { value: new Vector4( 0, 0, 1, 1 ) },
 
-		specularMap: { value: null },
-		alphaMap: { value: null },
+		// specularMap: { value: null },
+		// alphaMap: { value: null },
 
-		envMap: { value: null },
+		// envMap: { value: null },
 		flipEnvMap: { value: - 1 },
 		reflectivity: { value: 1.0 },
 		refractionRatio: { value: 0.98 }
 
 	},
 
-	aomap: {
+	// aomap: {
 
-		aoMap: { value: null },
-		aoMapIntensity: { value: 1 }
+	// 	aoMap: { value: null },
+	// 	aoMapIntensity: { value: 1 }
 
-	},
+	// },
 
-	lightmap: {
+	// lightmap: {
 
-		lightMap: { value: null },
-		lightMapIntensity: { value: 1 }
+	// 	lightMap: { value: null },
+	// 	lightMapIntensity: { value: 1 }
 
-	},
+	// },
 
-	emissivemap: {
+	// emissivemap: {
 
-		emissiveMap: { value: null }
+	// 	emissiveMap: { value: null }
 
-	},
+	// },
 
-	bumpmap: {
+	// bumpmap: {
 
-		bumpMap: { value: null },
-		bumpScale: { value: 1 }
+	// 	bumpMap: { value: null },
+	// 	bumpScale: { value: 1 }
 
-	},
+	// },
 
-	normalmap: {
+	// normalmap: {
 
-		normalMap: { value: null },
-		normalScale: { value: new Vector2( 1, 1 ) }
+	// 	normalMap: { value: null },
+	// 	normalScale: { value: new Vector2( 1, 1 ) }
 
-	},
+	// },
 
-	displacementmap: {
+	// displacementmap: {
 
-		displacementMap: { value: null },
-		displacementScale: { value: 1 },
-		displacementBias: { value: 0 }
+	// 	displacementMap: { value: null },
+	// 	displacementScale: { value: 1 },
+	// 	displacementBias: { value: 0 }
 
-	},
+	// },
 
-	roughnessmap: {
+	// roughnessmap: {
 
-		roughnessMap: { value: null }
+	// 	roughnessMap: { value: null }
 
-	},
+	// },
 
-	metalnessmap: {
+	// metalnessmap: {
 
-		metalnessMap: { value: null }
+	// 	metalnessMap: { value: null }
 
-	},
+	// },
 
-	gradientmap: {
+	// gradientmap: {
 
-		gradientMap: { value: null }
+	// 	gradientMap: { value: null }
 
-	},
+	// },
 
 	fog: {
 
@@ -113,52 +113,52 @@ var UniformsLib = {
 		directionalShadowMap: { value: [] },
 		directionalShadowMatrix: { value: [] },
 
-		spotLights: { value: [], properties: {
-			color: {},
-			position: {},
-			direction: {},
-			distance: {},
-			coneCos: {},
-			penumbraCos: {},
-			decay: {},
+		// spotLights: { value: [], properties: {
+		// 	color: {},
+		// 	position: {},
+		// 	direction: {},
+		// 	distance: {},
+		// 	coneCos: {},
+		// 	penumbraCos: {},
+		// 	decay: {},
 
-			shadow: {},
-			shadowBias: {},
-			shadowRadius: {},
-			shadowMapSize: {}
-		} },
+		// 	shadow: {},
+		// 	shadowBias: {},
+		// 	shadowRadius: {},
+		// 	shadowMapSize: {}
+		// } },
 
-		spotShadowMap: { value: [] },
-		spotShadowMatrix: { value: [] },
+		// spotShadowMap: { value: [] },
+		// spotShadowMatrix: { value: [] },
 
-		pointLights: { value: [], properties: {
-			color: {},
-			position: {},
-			decay: {},
-			distance: {},
+		// pointLights: { value: [], properties: {
+		// 	color: {},
+		// 	position: {},
+		// 	decay: {},
+		// 	distance: {},
 
-			shadow: {},
-			shadowBias: {},
-			shadowRadius: {},
-			shadowMapSize: {}
-		} },
+		// 	shadow: {},
+		// 	shadowBias: {},
+		// 	shadowRadius: {},
+		// 	shadowMapSize: {}
+		// } },
 
-		pointShadowMap: { value: [] },
-		pointShadowMatrix: { value: [] },
+		// pointShadowMap: { value: [] },
+		// pointShadowMatrix: { value: [] },
 
-		hemisphereLights: { value: [], properties: {
-			direction: {},
-			skyColor: {},
-			groundColor: {}
-		} },
+		// hemisphereLights: { value: [], properties: {
+		// 	direction: {},
+		// 	skyColor: {},
+		// 	groundColor: {}
+		// } },
 
-		// TODO (abelnation): RectAreaLight BRDF data needs to be moved from example to main src
-		rectAreaLights: { value: [], properties: {
-			color: {},
-			position: {},
-			width: {},
-			height: {}
-		} }
+		// // TODO (abelnation): RectAreaLight BRDF data needs to be moved from example to main src
+		// rectAreaLights: { value: [], properties: {
+		// 	color: {},
+		// 	position: {},
+		// 	width: {},
+		// 	height: {}
+		// } }
 
 	},
 

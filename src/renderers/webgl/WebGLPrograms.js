@@ -37,43 +37,43 @@ function WebGLPrograms( renderer, capabilities ) {
 	];
 
 
-	function allocateBones( object ) {
+	// function allocateBones( object ) {
 
-		if ( capabilities.floatVertexTextures && object && object.skeleton && object.skeleton.useVertexTexture ) {
+	// 	if ( capabilities.floatVertexTextures && object && object.skeleton && object.skeleton.useVertexTexture ) {
 
-			return 1024;
+	// 		return 1024;
 
-		} else {
+	// 	} else {
 
-			// default for when object is not specified
-			// ( for example when prebuilding shader to be used with multiple objects )
-			//
-			//  - leave some extra space for other uniforms
-			//  - limit here is ANGLE's 254 max uniform vectors
-			//    (up to 54 should be safe)
+	// 		// default for when object is not specified
+	// 		// ( for example when prebuilding shader to be used with multiple objects )
+	// 		//
+	// 		//  - leave some extra space for other uniforms
+	// 		//  - limit here is ANGLE's 254 max uniform vectors
+	// 		//    (up to 54 should be safe)
 
-			var nVertexUniforms = capabilities.maxVertexUniforms;
-			var nVertexMatrices = Math.floor( ( nVertexUniforms - 20 ) / 4 );
+	// 		var nVertexUniforms = capabilities.maxVertexUniforms;
+	// 		var nVertexMatrices = Math.floor( ( nVertexUniforms - 20 ) / 4 );
 
-			var maxBones = nVertexMatrices;
+	// 		var maxBones = nVertexMatrices;
 
-			if ( object !== undefined && (object && object.isSkinnedMesh) ) {
+	// 		if ( object !== undefined && (object && object.isSkinnedMesh) ) {
 
-				maxBones = Math.min( object.skeleton.bones.length, maxBones );
+	// 			maxBones = Math.min( object.skeleton.bones.length, maxBones );
 
-				if ( maxBones < object.skeleton.bones.length ) {
+	// 			if ( maxBones < object.skeleton.bones.length ) {
 
-					console.warn( 'WebGLRenderer: too many bones - ' + object.skeleton.bones.length + ', this GPU supports just ' + maxBones + ' (try OpenGL instead of ANGLE)' );
+	// 				console.warn( 'WebGLRenderer: too many bones - ' + object.skeleton.bones.length + ', this GPU supports just ' + maxBones + ' (try OpenGL instead of ANGLE)' );
 
-				}
+	// 			}
 
-			}
+	// 		}
 
-			return maxBones;
+	// 		return maxBones;
 
-		}
+	// 	}
 
-	}
+	// }
 
 	function getTextureEncodingFromMap( map, gammaOverrideLinear ) {
 
@@ -112,7 +112,7 @@ function WebGLPrograms( renderer, capabilities ) {
 		// heuristics to create shader parameters according to lights in the scene
 		// (not to blow over maxLights budget)
 
-		var maxBones = allocateBones( object );
+		// var maxBones = allocateBones( object );
 		var precision = renderer.getPrecision();
 
 		if ( material.precision !== null ) {
@@ -142,19 +142,19 @@ function WebGLPrograms( renderer, capabilities ) {
 			envMapMode: material.envMap && material.envMap.mapping,
 			envMapEncoding: getTextureEncodingFromMap( material.envMap, renderer.gammaInput ),
 			envMapCubeUV: ( !! material.envMap ) && ( ( material.envMap.mapping === CubeUVReflectionMapping ) || ( material.envMap.mapping === CubeUVRefractionMapping ) ),
-			lightMap: !! material.lightMap,
-			aoMap: !! material.aoMap,
-			emissiveMap: !! material.emissiveMap,
-			emissiveMapEncoding: getTextureEncodingFromMap( material.emissiveMap, renderer.gammaInput ),
-			bumpMap: !! material.bumpMap,
-			normalMap: !! material.normalMap,
-			displacementMap: !! material.displacementMap,
-			roughnessMap: !! material.roughnessMap,
-			metalnessMap: !! material.metalnessMap,
-			specularMap: !! material.specularMap,
+			// lightMap: !! material.lightMap,
+			// aoMap: !! material.aoMap,
+			// emissiveMap: !! material.emissiveMap,
+			// emissiveMapEncoding: getTextureEncodingFromMap( material.emissiveMap, renderer.gammaInput ),
+			// bumpMap: !! material.bumpMap,
+			// normalMap: !! material.normalMap,
+			// displacementMap: !! material.displacementMap,
+			// roughnessMap: !! material.roughnessMap,
+			// metalnessMap: !! material.metalnessMap,
+			// specularMap: !! material.specularMap,
 			alphaMap: !! material.alphaMap,
 
-			gradientMap: !! material.gradientMap,
+			// gradientMap: !! material.gradientMap,
 
 			combine: material.combine,
 
@@ -169,14 +169,14 @@ function WebGLPrograms( renderer, capabilities ) {
 			sizeAttenuation: material.sizeAttenuation,
 			logarithmicDepthBuffer: capabilities.logarithmicDepthBuffer,
 
-			skinning: material.skinning,
-			maxBones: maxBones,
+			// skinning: material.skinning,
+			// maxBones: maxBones,
 			useVertexTexture: capabilities.floatVertexTextures && object && object.skeleton && object.skeleton.useVertexTexture,
 
-			morphTargets: material.morphTargets,
-			morphNormals: material.morphNormals,
-			maxMorphTargets: renderer.maxMorphTargets,
-			maxMorphNormals: renderer.maxMorphNormals,
+			// morphTargets: material.morphTargets,
+			// morphNormals: material.morphNormals,
+			// maxMorphTargets: renderer.maxMorphTargets,
+			// maxMorphNormals: renderer.maxMorphNormals,
 
 			numDirLights: lights.directional.length,
 			numPointLights: lights.point.length,
@@ -187,8 +187,8 @@ function WebGLPrograms( renderer, capabilities ) {
 			numClippingPlanes: nClipPlanes,
 			numClipIntersection: nClipIntersection,
 
-			shadowMapEnabled: renderer.shadowMap.enabled && object.receiveShadow && lights.shadows.length > 0,
-			shadowMapType: renderer.shadowMap.type,
+			// shadowMapEnabled: renderer.shadowMap.enabled && object.receiveShadow && lights.shadows.length > 0,
+			// shadowMapType: renderer.shadowMap.type,
 
 			toneMapping: renderer.toneMapping,
 			physicallyCorrectLights: renderer.physicallyCorrectLights,
