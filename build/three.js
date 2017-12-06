@@ -17399,7 +17399,7 @@
 
 	function WebGLRenderer( parameters ) {
 
-		console.log( 'THREE.WebGLRenderer', REVISION, '0.1' );
+		console.log( 'THREE.WebGLRenderer', REVISION, 'mod: gn-small' );
 
 		parameters = parameters || {};
 
