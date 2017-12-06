@@ -5,7 +5,7 @@ import alphatest_fragment from './ShaderChunk/alphatest_fragment.glsl';
 // import aomap_pars_fragment from './ShaderChunk/aomap_pars_fragment.glsl';
 import begin_vertex from './ShaderChunk/begin_vertex.glsl';
 import beginnormal_vertex from './ShaderChunk/beginnormal_vertex.glsl';
-import bsdfs from './ShaderChunk/bsdfs.glsl';
+// import bsdfs from './ShaderChunk/bsdfs.glsl';
 // import bumpmap_pars_fragment from './ShaderChunk/bumpmap_pars_fragment.glsl';
 // import clipping_planes_fragment from './ShaderChunk/clipping_planes_fragment.glsl';
 // import clipping_planes_pars_fragment from './ShaderChunk/clipping_planes_pars_fragment.glsl';

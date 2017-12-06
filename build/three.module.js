@@ -4858,7 +4858,7 @@ var color_fragment = "#ifdef USE_COLOR\n\tdiffuseColor.rgb *= vColor;\n#endif";
 
 var color_pars_fragment = "#ifdef USE_COLOR\n\tvarying vec3 vColor;\n#endif\n";
 
-var common = "#define PI 3.14159265359\n#define PI2 6.28318530718\n#define PI_HALF 1.5707963267949\n#define RECIPROCAL_PI 0.31830988618\n#define RECIPROCAL_PI2 0.15915494\n#define LOG2 1.442695\n#define EPSILON 1e-6\n#define saturate(a) clamp( a, 0.0, 1.0 )\n#define whiteCompliment(a) ( 1.0 - saturate( a ) )\nfloat pow2( const in float x ) { return x*x; }\nfloat pow3( const in float x ) { return x*x*x; }\nfloat pow4( const in float x ) { float x2 = x*x; return x2*x2; }\nfloat average( const in vec3 color ) { return dot( color, vec3( 0.3333 ) ); }\nhighp float rand( const in vec2 uv ) {\n\tconst highp float a = 12.9898, b = 78.233, c = 43758.5453;\n\thighp float dt = dot( uv.xy, vec2( a,b ) ), sn = mod( dt, PI );\n\treturn fract(sin(sn) * c);\n}\nstruct IncidentLight {\n\tvec3 color;\n\tvec3 direction;\n\tbool visible;\n};\nstruct ReflectedLight {\n\tvec3 directDiffuse;\n\tvec3 directSpecular;\n\tvec3 indirectDiffuse;\n\tvec3 indirectSpecular;\n};\nstruct GeometricContext {\n\tvec3 position;\n\tvec3 normal;\n\tvec3 viewDir;\n};\nvec3 transformDirection( in vec3 dir, in mat4 matrix ) {\n\treturn normalize( ( matrix * vec4( dir, 0.0 ) ).xyz );\n}\nmat3 transpose( const in mat3 v ) {\n\tmat3 tmp;\n\ttmp[0] = vec3(v[0].x, v[1].x, v[2].x);\n\ttmp[1] = vec3(v[0].y, v[1].y, v[2].y);\n\ttmp[2] = vec3(v[0].z, v[1].z, v[2].z);\n\treturn tmp;\n}\n";
+var common = "#define PI 3.14159265359\n#define PI2 6.28318530718\n#define PI_HALF 1.5707963267949\n#define RECIPROCAL_PI 0.31830988618\n#define RECIPROCAL_PI2 0.15915494\n#define LOG2 1.442695\n#define EPSILON 1e-6\n#define saturate(a) clamp( a, 0.0, 1.0 )\n#define whiteCompliment(a) ( 1.0 - saturate( a ) )\nfloat pow2( const in float x ) { return x*x; }\nfloat pow3( const in float x ) { return x*x*x; }\nfloat pow4( const in float x ) { float x2 = x*x; return x2*x2; }\nfloat average( const in vec3 color ) { return dot( color, vec3( 0.3333 ) ); }\nstruct IncidentLight {\n\tvec3 color;\n\tvec3 direction;\n\tbool visible;\n};\nstruct ReflectedLight {\n\tvec3 directDiffuse;\n\tvec3 directSpecular;\n\tvec3 indirectDiffuse;\n\tvec3 indirectSpecular;\n};\nstruct GeometricContext {\n\tvec3 position;\n\tvec3 normal;\n\tvec3 viewDir;\n};\n";
 
 var defaultnormal_vertex = "#ifdef FLIP_SIDED\n\tobjectNormal = -objectNormal;\n#endif\nvec3 transformedNormal = normalMatrix * objectNormal;\n";
 
@@ -4904,6 +4904,7 @@ var points_vert = "uniform float size;\nuniform float scale;\n#include <common>\
 // import alphamap_pars_fragment from './ShaderChunk/alphamap_pars_fragment.glsl';
 // import aomap_fragment from './ShaderChunk/aomap_fragment.glsl';
 // import aomap_pars_fragment from './ShaderChunk/aomap_pars_fragment.glsl';
+// import bsdfs from './ShaderChunk/bsdfs.glsl';
 // import bumpmap_pars_fragment from './ShaderChunk/bumpmap_pars_fragment.glsl';
 // import clipping_planes_fragment from './ShaderChunk/clipping_planes_fragment.glsl';
 // import clipping_planes_pars_fragment from './ShaderChunk/clipping_planes_pars_fragment.glsl';
@@ -5634,7 +5635,7 @@ var UniformsLib = {
 		// alphaMap: { value: null },
 
 		// envMap: { value: null },
-		flipEnvMap: { value: - 1 },
+		// flipEnvMap: { value: - 1 },
 		reflectivity: { value: 1.0 },
 		refractionRatio: { value: 0.98 }
 
@@ -13776,729 +13777,6 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 /**
  * @author mrdoob / http://mrdoob.com/
- * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Cube.as
- */
-
-function BoxGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) {
-
-	Geometry.call( this );
-
-	this.type = 'BoxGeometry';
-
-	this.parameters = {
-		width: width,
-		height: height,
-		depth: depth,
-		widthSegments: widthSegments,
-		heightSegments: heightSegments,
-		depthSegments: depthSegments
-	};
-
-	this.fromBufferGeometry( new BoxBufferGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) );
-	this.mergeVertices();
-
-}
-
-BoxGeometry.prototype = Object.create( Geometry.prototype );
-BoxGeometry.prototype.constructor = BoxGeometry;
-
-/**
- * @author Mugen87 / https://github.com/Mugen87
- */
-
-function BoxBufferGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) {
-
-	BufferGeometry.call( this );
-
-	this.type = 'BoxBufferGeometry';
-
-	this.parameters = {
-		width: width,
-		height: height,
-		depth: depth,
-		widthSegments: widthSegments,
-		heightSegments: heightSegments,
-		depthSegments: depthSegments
-	};
-
-	var scope = this;
-
-	// segments
-
-	widthSegments = Math.floor( widthSegments ) || 1;
-	heightSegments = Math.floor( heightSegments ) || 1;
-	depthSegments = Math.floor( depthSegments ) || 1;
-
-	// buffers
-
-	var indices = [];
-	var vertices = [];
-	var normals = [];
-	var uvs = [];
-
-	// helper variables
-
-	var numberOfVertices = 0;
-	var groupStart = 0;
-
-	// build each side of the box geometry
-
-	buildPlane( 'z', 'y', 'x', - 1, - 1, depth, height,   width,  depthSegments, heightSegments, 0 ); // px
-	buildPlane( 'z', 'y', 'x',   1, - 1, depth, height, - width,  depthSegments, heightSegments, 1 ); // nx
-	buildPlane( 'x', 'z', 'y',   1,   1, width, depth,    height, widthSegments, depthSegments,  2 ); // py
-	buildPlane( 'x', 'z', 'y',   1, - 1, width, depth,  - height, widthSegments, depthSegments,  3 ); // ny
-	buildPlane( 'x', 'y', 'z',   1, - 1, width, height,   depth,  widthSegments, heightSegments, 4 ); // pz
-	buildPlane( 'x', 'y', 'z', - 1, - 1, width, height, - depth,  widthSegments, heightSegments, 5 ); // nz
-
-	// build geometry
-
-	this.setIndex( indices );
-	this.addAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
-	this.addAttribute( 'normal', new Float32BufferAttribute( normals, 3 ) );
-	this.addAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );
-
-	function buildPlane( u, v, w, udir, vdir, width, height, depth, gridX, gridY, materialIndex ) {
-
-		var segmentWidth = width / gridX;
-		var segmentHeight = height / gridY;
-
-		var widthHalf = width / 2;
-		var heightHalf = height / 2;
-		var depthHalf = depth / 2;
-
-		var gridX1 = gridX + 1;
-		var gridY1 = gridY + 1;
-
-		var vertexCounter = 0;
-		var groupCount = 0;
-
-		var ix, iy;
-
-		var vector = new Vector3();
-
-		// generate vertices, normals and uvs
-
-		for ( iy = 0; iy < gridY1; iy ++ ) {
-
-			var y = iy * segmentHeight - heightHalf;
-
-			for ( ix = 0; ix < gridX1; ix ++ ) {
-
-				var x = ix * segmentWidth - widthHalf;
-
-				// set values to correct vector component
-
-				vector[ u ] = x * udir;
-				vector[ v ] = y * vdir;
-				vector[ w ] = depthHalf;
-
-				// now apply vector to vertex buffer
-
-				vertices.push( vector.x, vector.y, vector.z );
-
-				// set values to correct vector component
-
-				vector[ u ] = 0;
-				vector[ v ] = 0;
-				vector[ w ] = depth > 0 ? 1 : - 1;
-
-				// now apply vector to normal buffer
-
-				normals.push( vector.x, vector.y, vector.z );
-
-				// uvs
-
-				uvs.push( ix / gridX );
-				uvs.push( 1 - ( iy / gridY ) );
-
-				// counters
-
-				vertexCounter += 1;
-
-			}
-
-		}
-
-		// indices
-
-		// 1. you need three indices to draw a single face
-		// 2. a single segment consists of two faces
-		// 3. so we need to generate six (2*3) indices per segment
-
-		for ( iy = 0; iy < gridY; iy ++ ) {
-
-			for ( ix = 0; ix < gridX; ix ++ ) {
-
-				var a = numberOfVertices + ix + gridX1 * iy;
-				var b = numberOfVertices + ix + gridX1 * ( iy + 1 );
-				var c = numberOfVertices + ( ix + 1 ) + gridX1 * ( iy + 1 );
-				var d = numberOfVertices + ( ix + 1 ) + gridX1 * iy;
-
-				// faces
-
-				indices.push( a, b, d );
-				indices.push( b, c, d );
-
-				// increase counter
-
-				groupCount += 6;
-
-			}
-
-		}
-
-		// add a group to the geometry. this will ensure multi material support
-
-		scope.addGroup( groupStart, groupCount, materialIndex );
-
-		// calculate new start value for groups
-
-		groupStart += groupCount;
-
-		// update total number of vertices
-
-		numberOfVertices += vertexCounter;
-
-	}
-
-}
-
-BoxBufferGeometry.prototype = Object.create( BufferGeometry.prototype );
-BoxBufferGeometry.prototype.constructor = BoxBufferGeometry;
-
-/**
- * @author mrdoob / http://mrdoob.com/
- * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Plane.as
- */
-
-function PlaneGeometry( width, height, widthSegments, heightSegments ) {
-
-	Geometry.call( this );
-
-	this.type = 'PlaneGeometry';
-
-	this.parameters = {
-		width: width,
-		height: height,
-		widthSegments: widthSegments,
-		heightSegments: heightSegments
-	};
-
-	this.fromBufferGeometry( new PlaneBufferGeometry( width, height, widthSegments, heightSegments ) );
-
-}
-
-PlaneGeometry.prototype = Object.create( Geometry.prototype );
-PlaneGeometry.prototype.constructor = PlaneGeometry;
-
-/**
- * @author mrdoob / http://mrdoob.com/
- * @author Mugen87 / https://github.com/Mugen87
- *
- * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Plane.as
- */
-
-function PlaneBufferGeometry( width, height, widthSegments, heightSegments ) {
-
-	BufferGeometry.call( this );
-
-	this.type = 'PlaneBufferGeometry';
-
-	this.parameters = {
-		width: width,
-		height: height,
-		widthSegments: widthSegments,
-		heightSegments: heightSegments
-	};
-
-	var width_half = width / 2;
-	var height_half = height / 2;
-
-	var gridX = Math.floor( widthSegments ) || 1;
-	var gridY = Math.floor( heightSegments ) || 1;
-
-	var gridX1 = gridX + 1;
-	var gridY1 = gridY + 1;
-
-	var segment_width = width / gridX;
-	var segment_height = height / gridY;
-
-	var ix, iy;
-
-	// buffers
-
-	var indices = [];
-	var vertices = [];
-	var normals = [];
-	var uvs = [];
-
-	// generate vertices, normals and uvs
-
-	for ( iy = 0; iy < gridY1; iy ++ ) {
-
-		var y = iy * segment_height - height_half;
-
-		for ( ix = 0; ix < gridX1; ix ++ ) {
-
-			var x = ix * segment_width - width_half;
-
-			vertices.push( x, - y, 0 );
-
-			normals.push( 0, 0, 1 );
-
-			uvs.push( ix / gridX );
-			uvs.push( 1 - ( iy / gridY ) );
-
-		}
-
-	}
-
-	// indices
-
-	for ( iy = 0; iy < gridY; iy ++ ) {
-
-		for ( ix = 0; ix < gridX; ix ++ ) {
-
-			var a = ix + gridX1 * iy;
-			var b = ix + gridX1 * ( iy + 1 );
-			var c = ( ix + 1 ) + gridX1 * ( iy + 1 );
-			var d = ( ix + 1 ) + gridX1 * iy;
-
-			// faces
-
-			indices.push( a, b, d );
-			indices.push( b, c, d );
-
-		}
-
-	}
-
-	// build geometry
-
-	this.setIndex( indices );
-	this.addAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
-	this.addAttribute( 'normal', new Float32BufferAttribute( normals, 3 ) );
-	this.addAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );
-
-}
-
-PlaneBufferGeometry.prototype = Object.create( BufferGeometry.prototype );
-PlaneBufferGeometry.prototype.constructor = PlaneBufferGeometry;
-
-/**
- * @author mrdoob / http://mrdoob.com/
- * @author mikael emtinger / http://gomo.se/
- * @author WestLangley / http://github.com/WestLangley
-*/
-
-function Camera() {
-
-	Object3D.call( this );
-
-	this.type = 'Camera';
-
-	this.matrixWorldInverse = new Matrix4();
-	this.projectionMatrix = new Matrix4();
-
-}
-
-Camera.prototype = Object.create( Object3D.prototype );
-Camera.prototype.constructor = Camera;
-
-Camera.prototype.isCamera = true;
-
-Camera.prototype.getWorldDirection = function () {
-
-	var quaternion = new Quaternion();
-
-	return function getWorldDirection( optionalTarget ) {
-
-		var result = optionalTarget || new Vector3();
-
-		this.getWorldQuaternion( quaternion );
-
-		return result.set( 0, 0, - 1 ).applyQuaternion( quaternion );
-
-	};
-
-}();
-
-Camera.prototype.lookAt = function () {
-
-	// This routine does not support cameras with rotated and/or translated parent(s)
-
-	var m1 = new Matrix4();
-
-	return function lookAt( vector ) {
-
-		m1.lookAt( this.position, vector, this.up );
-
-		this.quaternion.setFromRotationMatrix( m1 );
-
-	};
-
-}();
-
-Camera.prototype.clone = function () {
-
-	return new this.constructor().copy( this );
-
-};
-
-Camera.prototype.copy = function ( source ) {
-
-	Object3D.prototype.copy.call( this, source );
-
-	this.matrixWorldInverse.copy( source.matrixWorldInverse );
-	this.projectionMatrix.copy( source.projectionMatrix );
-
-	return this;
-
-};
-
-/**
- * @author mrdoob / http://mrdoob.com/
- * @author greggman / http://games.greggman.com/
- * @author zz85 / http://www.lab4games.net/zz85/blog
- * @author tschw
- */
-
-function PerspectiveCamera( fov, aspect, near, far ) {
-
-	Camera.call( this );
-
-	this.type = 'PerspectiveCamera';
-
-	this.fov = fov !== undefined ? fov : 50;
-	this.zoom = 1;
-
-	this.near = near !== undefined ? near : 0.1;
-	this.far = far !== undefined ? far : 2000;
-	this.focus = 10;
-
-	this.aspect = aspect !== undefined ? aspect : 1;
-	this.view = null;
-
-	this.filmGauge = 35;	// width of the film (default in millimeters)
-	this.filmOffset = 0;	// horizontal film offset (same unit as gauge)
-
-	this.updateProjectionMatrix();
-
-}
-
-PerspectiveCamera.prototype = Object.assign( Object.create( Camera.prototype ), {
-
-	constructor: PerspectiveCamera,
-
-	isPerspectiveCamera: true,
-
-	copy: function ( source ) {
-
-		Camera.prototype.copy.call( this, source );
-
-		this.fov = source.fov;
-		this.zoom = source.zoom;
-
-		this.near = source.near;
-		this.far = source.far;
-		this.focus = source.focus;
-
-		this.aspect = source.aspect;
-		this.view = source.view === null ? null : Object.assign( {}, source.view );
-
-		this.filmGauge = source.filmGauge;
-		this.filmOffset = source.filmOffset;
-
-		return this;
-
-	},
-
-	/**
-	 * Sets the FOV by focal length in respect to the current .filmGauge.
-	 *
-	 * The default film gauge is 35, so that the focal length can be specified for
-	 * a 35mm (full frame) camera.
-	 *
-	 * Values for focal length and film gauge must have the same unit.
-	 */
-	setFocalLength: function ( focalLength ) {
-
-		// see http://www.bobatkins.com/photography/technical/field_of_view.html
-		var vExtentSlope = 0.5 * this.getFilmHeight() / focalLength;
-
-		this.fov = _Math.RAD2DEG * 2 * Math.atan( vExtentSlope );
-		this.updateProjectionMatrix();
-
-	},
-
-	/**
-	 * Calculates the focal length from the current .fov and .filmGauge.
-	 */
-	getFocalLength: function () {
-
-		var vExtentSlope = Math.tan( _Math.DEG2RAD * 0.5 * this.fov );
-
-		return 0.5 * this.getFilmHeight() / vExtentSlope;
-
-	},
-
-	getEffectiveFOV: function () {
-
-		return _Math.RAD2DEG * 2 * Math.atan(
-				Math.tan( _Math.DEG2RAD * 0.5 * this.fov ) / this.zoom );
-
-	},
-
-	getFilmWidth: function () {
-
-		// film not completely covered in portrait format (aspect < 1)
-		return this.filmGauge * Math.min( this.aspect, 1 );
-
-	},
-
-	getFilmHeight: function () {
-
-		// film not completely covered in landscape format (aspect > 1)
-		return this.filmGauge / Math.max( this.aspect, 1 );
-
-	},
-
-	/**
-	 * Sets an offset in a larger frustum. This is useful for multi-window or
-	 * multi-monitor/multi-machine setups.
-	 *
-	 * For example, if you have 3x2 monitors and each monitor is 1920x1080 and
-	 * the monitors are in grid like this
-	 *
-	 *   +---+---+---+
-	 *   | A | B | C |
-	 *   +---+---+---+
-	 *   | D | E | F |
-	 *   +---+---+---+
-	 *
-	 * then for each monitor you would call it like this
-	 *
-	 *   var w = 1920;
-	 *   var h = 1080;
-	 *   var fullWidth = w * 3;
-	 *   var fullHeight = h * 2;
-	 *
-	 *   --A--
-	 *   camera.setOffset( fullWidth, fullHeight, w * 0, h * 0, w, h );
-	 *   --B--
-	 *   camera.setOffset( fullWidth, fullHeight, w * 1, h * 0, w, h );
-	 *   --C--
-	 *   camera.setOffset( fullWidth, fullHeight, w * 2, h * 0, w, h );
-	 *   --D--
-	 *   camera.setOffset( fullWidth, fullHeight, w * 0, h * 1, w, h );
-	 *   --E--
-	 *   camera.setOffset( fullWidth, fullHeight, w * 1, h * 1, w, h );
-	 *   --F--
-	 *   camera.setOffset( fullWidth, fullHeight, w * 2, h * 1, w, h );
-	 *
-	 *   Note there is no reason monitors have to be the same size or in a grid.
-	 */
-	setViewOffset: function ( fullWidth, fullHeight, x, y, width, height ) {
-
-		this.aspect = fullWidth / fullHeight;
-
-		this.view = {
-			fullWidth: fullWidth,
-			fullHeight: fullHeight,
-			offsetX: x,
-			offsetY: y,
-			width: width,
-			height: height
-		};
-
-		this.updateProjectionMatrix();
-
-	},
-
-	clearViewOffset: function() {
-
-		this.view = null;
-		this.updateProjectionMatrix();
-
-	},
-
-	updateProjectionMatrix: function () {
-
-		var near = this.near,
-			top = near * Math.tan(
-					_Math.DEG2RAD * 0.5 * this.fov ) / this.zoom,
-			height = 2 * top,
-			width = this.aspect * height,
-			left = - 0.5 * width,
-			view = this.view;
-
-		if ( view !== null ) {
-
-			var fullWidth = view.fullWidth,
-				fullHeight = view.fullHeight;
-
-			left += view.offsetX * width / fullWidth;
-			top -= view.offsetY * height / fullHeight;
-			width *= view.width / fullWidth;
-			height *= view.height / fullHeight;
-
-		}
-
-		var skew = this.filmOffset;
-		if ( skew !== 0 ) left += near * skew / this.getFilmWidth();
-
-		this.projectionMatrix.makePerspective( left, left + width, top, top - height, near, this.far );
-
-	},
-
-	// toJSON: function ( meta ) {
-
-	// 	var data = Object3D.prototype.toJSON.call( this, meta );
-
-	// 	data.object.fov = this.fov;
-	// 	data.object.zoom = this.zoom;
-
-	// 	data.object.near = this.near;
-	// 	data.object.far = this.far;
-	// 	data.object.focus = this.focus;
-
-	// 	data.object.aspect = this.aspect;
-
-	// 	if ( this.view !== null ) data.object.view = Object.assign( {}, this.view );
-
-	// 	data.object.filmGauge = this.filmGauge;
-	// 	data.object.filmOffset = this.filmOffset;
-
-	// 	return data;
-
-	// }
-
-} );
-
-/**
- * @author alteredq / http://alteredqualia.com/
- * @author arose / http://github.com/arose
- */
-
-function OrthographicCamera( left, right, top, bottom, near, far ) {
-
-	Camera.call( this );
-
-	this.type = 'OrthographicCamera';
-
-	this.zoom = 1;
-	this.view = null;
-
-	this.left = left;
-	this.right = right;
-	this.top = top;
-	this.bottom = bottom;
-
-	this.near = ( near !== undefined ) ? near : 0.1;
-	this.far = ( far !== undefined ) ? far : 2000;
-
-	this.updateProjectionMatrix();
-
-}
-
-OrthographicCamera.prototype = Object.assign( Object.create( Camera.prototype ), {
-
-	constructor: OrthographicCamera,
-
-	isOrthographicCamera: true,
-
-	copy: function ( source ) {
-
-		Camera.prototype.copy.call( this, source );
-
-		this.left = source.left;
-		this.right = source.right;
-		this.top = source.top;
-		this.bottom = source.bottom;
-		this.near = source.near;
-		this.far = source.far;
-
-		this.zoom = source.zoom;
-		this.view = source.view === null ? null : Object.assign( {}, source.view );
-
-		return this;
-
-	},
-
-	setViewOffset: function( fullWidth, fullHeight, x, y, width, height ) {
-
-		this.view = {
-			fullWidth: fullWidth,
-			fullHeight: fullHeight,
-			offsetX: x,
-			offsetY: y,
-			width: width,
-			height: height
-		};
-
-		this.updateProjectionMatrix();
-
-	},
-
-	clearViewOffset: function() {
-
-		this.view = null;
-		this.updateProjectionMatrix();
-
-	},
-
-	updateProjectionMatrix: function () {
-
-		var dx = ( this.right - this.left ) / ( 2 * this.zoom );
-		var dy = ( this.top - this.bottom ) / ( 2 * this.zoom );
-		var cx = ( this.right + this.left ) / 2;
-		var cy = ( this.top + this.bottom ) / 2;
-
-		var left = cx - dx;
-		var right = cx + dx;
-		var top = cy + dy;
-		var bottom = cy - dy;
-
-		if ( this.view !== null ) {
-
-			var zoomW = this.zoom / ( this.view.width / this.view.fullWidth );
-			var zoomH = this.zoom / ( this.view.height / this.view.fullHeight );
-			var scaleW = ( this.right - this.left ) / this.view.width;
-			var scaleH = ( this.top - this.bottom ) / this.view.height;
-
-			left += scaleW * ( this.view.offsetX / zoomW );
-			right = left + scaleW * ( this.view.width / zoomW );
-			top -= scaleH * ( this.view.offsetY / zoomH );
-			bottom = top - scaleH * ( this.view.height / zoomH );
-
-		}
-
-		this.projectionMatrix.makeOrthographic( left, right, top, bottom, this.near, this.far );
-
-	},
-
-	toJSON: function ( meta ) {
-
-		var data = Object3D.prototype.toJSON.call( this, meta );
-
-		data.object.zoom = this.zoom;
-		data.object.left = this.left;
-		data.object.right = this.right;
-		data.object.top = this.top;
-		data.object.bottom = this.bottom;
-		data.object.near = this.near;
-		data.object.far = this.far;
-
-		if ( this.view !== null ) data.object.view = Object.assign( {}, this.view );
-
-		return data;
-
-	}
-
-} );
-
-/**
- * @author mrdoob / http://mrdoob.com/
  */
 
 function WebGLIndexedBufferRenderer( gl, extensions, infoRender ) {
@@ -18474,6 +17752,10 @@ Frustum.prototype = {
 
 // import { LensFlarePlugin } from './webgl/plugins/LensFlarePlugin';
 // import { WebGLShadowMap } from './webgl/WebGLShadowMap';
+// import { BoxBufferGeometry } from '../geometries/BoxGeometry';
+// import { PlaneBufferGeometry } from '../geometries/PlaneGeometry';
+// import { PerspectiveCamera } from '../cameras/PerspectiveCamera';
+// import { OrthographicCamera } from '../cameras/OrthographicCamera';
 /**
  * @author supereggbert / http://www.paulbrunt.co.uk/
  * @author mrdoob / http://mrdoob.com/
@@ -19610,60 +18892,60 @@ function WebGLRenderer( parameters ) {
 
 		}
 
-		if ( background && background.isCubeTexture ) {
+		// if ( background && background.isCubeTexture ) {
 
-			if ( backgroundBoxCamera === undefined ) {
+		// 	if ( backgroundBoxCamera === undefined ) {
 
-				backgroundBoxCamera = new PerspectiveCamera();
+		// 		backgroundBoxCamera = new PerspectiveCamera();
 
-				backgroundBoxMesh = new Mesh(
-					new BoxBufferGeometry( 5, 5, 5 ),
-					new ShaderMaterial( {
-						uniforms: ShaderLib.cube.uniforms,
-						vertexShader: ShaderLib.cube.vertexShader,
-						fragmentShader: ShaderLib.cube.fragmentShader,
-						side: BackSide,
-						depthTest: false,
-						depthWrite: false,
-						fog: false
-					} )
-				);
+		// 		backgroundBoxMesh = new Mesh(
+		// 			new BoxBufferGeometry( 5, 5, 5 ),
+		// 			new ShaderMaterial( {
+		// 				uniforms: ShaderLib.cube.uniforms,
+		// 				vertexShader: ShaderLib.cube.vertexShader,
+		// 				fragmentShader: ShaderLib.cube.fragmentShader,
+		// 				side: BackSide,
+		// 				depthTest: false,
+		// 				depthWrite: false,
+		// 				fog: false
+		// 			} )
+		// 		);
 
-			}
+		// 	}
 
-			backgroundBoxCamera.projectionMatrix.copy( camera.projectionMatrix );
+		// 	backgroundBoxCamera.projectionMatrix.copy( camera.projectionMatrix );
 
-			backgroundBoxCamera.matrixWorld.extractRotation( camera.matrixWorld );
-			backgroundBoxCamera.matrixWorldInverse.getInverse( backgroundBoxCamera.matrixWorld );
+		// 	backgroundBoxCamera.matrixWorld.extractRotation( camera.matrixWorld );
+		// 	backgroundBoxCamera.matrixWorldInverse.getInverse( backgroundBoxCamera.matrixWorld );
 
 
-			backgroundBoxMesh.material.uniforms[ "tCube" ].value = background;
-			backgroundBoxMesh.modelViewMatrix.multiplyMatrices( backgroundBoxCamera.matrixWorldInverse, backgroundBoxMesh.matrixWorld );
+		// 	backgroundBoxMesh.material.uniforms[ "tCube" ].value = background;
+		// 	backgroundBoxMesh.modelViewMatrix.multiplyMatrices( backgroundBoxCamera.matrixWorldInverse, backgroundBoxMesh.matrixWorld );
 
-			objects.update( backgroundBoxMesh );
+		// 	objects.update( backgroundBoxMesh );
 
-			_this.renderBufferDirect( backgroundBoxCamera, null, backgroundBoxMesh.geometry, backgroundBoxMesh.material, backgroundBoxMesh, null );
+		// 	_this.renderBufferDirect( backgroundBoxCamera, null, backgroundBoxMesh.geometry, backgroundBoxMesh.material, backgroundBoxMesh, null );
 
-		} else if ( background && background.isTexture ) {
+		// } else if ( background && background.isTexture ) {
 
-			if ( backgroundPlaneCamera === undefined ) {
+		// 	if ( backgroundPlaneCamera === undefined ) {
 
-				backgroundPlaneCamera = new OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
+		// 		backgroundPlaneCamera = new OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
 
-				backgroundPlaneMesh = new Mesh(
-					new PlaneBufferGeometry( 2, 2 ),
-					new MeshBasicMaterial( { depthTest: false, depthWrite: false, fog: false } )
-				);
+		// 		backgroundPlaneMesh = new Mesh(
+		// 			new PlaneBufferGeometry( 2, 2 ),
+		// 			new MeshBasicMaterial( { depthTest: false, depthWrite: false, fog: false } )
+		// 		);
 
-			}
+		// 	}
 
-			backgroundPlaneMesh.material.map = background;
+		// 	backgroundPlaneMesh.material.map = background;
 
-			objects.update( backgroundPlaneMesh );
+		// 	objects.update( backgroundPlaneMesh );
 
-			_this.renderBufferDirect( backgroundPlaneCamera, null, backgroundPlaneMesh.geometry, backgroundPlaneMesh.material, backgroundPlaneMesh, null );
+		// 	_this.renderBufferDirect( backgroundPlaneCamera, null, backgroundPlaneMesh.geometry, backgroundPlaneMesh.material, backgroundPlaneMesh, null );
 
-		}
+		// }
 
 		//
 
@@ -20208,12 +19490,12 @@ function WebGLRenderer( parameters ) {
 
 			p_uniforms.set( _gl, camera, 'projectionMatrix' );
 
-			if ( capabilities.logarithmicDepthBuffer ) {
+			// if ( capabilities.logarithmicDepthBuffer ) {
 
-				p_uniforms.setValue( _gl, 'logDepthBufFC',
-					2.0 / ( Math.log( camera.far + 1.0 ) / Math.LN2 ) );
+			// 	p_uniforms.setValue( _gl, 'logDepthBufFC',
+			// 		2.0 / ( Math.log( camera.far + 1.0 ) / Math.LN2 ) );
 
-			}
+			// }
 
 
 			if ( camera !== _currentCamera ) {
@@ -20259,8 +19541,8 @@ function WebGLRenderer( parameters ) {
 
 			}
 
-			p_uniforms.set( _gl, _this, 'toneMappingExposure' );
-			p_uniforms.set( _gl, _this, 'toneMappingWhitePoint' );
+			// p_uniforms.set( _gl, _this, 'toneMappingExposure' );
+			// p_uniforms.set( _gl, _this, 'toneMappingWhitePoint' );
 
 		}
 
@@ -20312,11 +19594,11 @@ function WebGLRenderer( parameters ) {
 
 			// refresh uniforms common to several materials
 
-			if ( fog && material.fog ) {
+			// if ( fog && material.fog ) {
 
-				refreshUniformsFog( m_uniforms, fog );
+			// 	refreshUniformsFog( m_uniforms, fog );
 
-			}
+			// }
 
 			if ( material.isMeshBasicMaterial ||
 				material.isMeshLambertMaterial ||
@@ -20345,19 +19627,19 @@ function WebGLRenderer( parameters ) {
 			// 	refreshUniformsPoints( m_uniforms, material );
 
 			// } else 
-			if ( material.isMeshLambertMaterial ) {
+			// if ( material.isMeshLambertMaterial ) {
 
-				refreshUniformsLambert( m_uniforms, material );
+			// 	refreshUniformsLambert( m_uniforms, material );
 
-			// } else if ( material.isMeshToonMaterial ) {
+			// // } else if ( material.isMeshToonMaterial ) {
 
-				// refreshUniformsToon( m_uniforms, material );
+			// 	// refreshUniformsToon( m_uniforms, material );
 
-			} else if ( material.isMeshPhongMaterial ) {
+			// } else if ( material.isMeshPhongMaterial ) {
 
-				refreshUniformsPhong( m_uniforms, material );
+			// 	refreshUniformsPhong( m_uniforms, material );
 
-			}
+			// }
 			// } else if ( material.isMeshPhysicalMaterial ) {
 
 			// 	refreshUniformsPhysical( m_uniforms, material );
@@ -20507,7 +19789,7 @@ function WebGLRenderer( parameters ) {
 		//  WebGLRenderTargetCube will be flipped for backwards compatibility
 		//  WebGLRenderTargetCube.texture will be flipped because it's a Texture and NOT a CubeTexture
 		// this check must be handled differently, or removed entirely, if WebGLRenderTargetCube uses a CubeTexture in the future
-		uniforms.flipEnvMap.value = ( ! ( material.envMap && material.envMap.isCubeTexture ) ) ? 1 : - 1;
+		// uniforms.flipEnvMap.value = ( ! ( material.envMap && material.envMap.isCubeTexture ) ) ? 1 : - 1;
 
 		uniforms.reflectivity.value = material.reflectivity;
 		uniforms.refractionRatio.value = material.refractionRatio;
@@ -20549,67 +19831,67 @@ function WebGLRenderer( parameters ) {
 
 	}
 
-	function refreshUniformsFog( uniforms, fog ) {
+	// function refreshUniformsFog( uniforms, fog ) {
 
-		uniforms.fogColor.value = fog.color;
+	// 	uniforms.fogColor.value = fog.color;
 
-		if ( fog.isFog ) {
+	// 	if ( fog.isFog ) {
 
-			uniforms.fogNear.value = fog.near;
-			uniforms.fogFar.value = fog.far;
+	// 		uniforms.fogNear.value = fog.near;
+	// 		uniforms.fogFar.value = fog.far;
 
-		} else if ( fog.isFogExp2 ) {
+	// 	} else if ( fog.isFogExp2 ) {
 
-			uniforms.fogDensity.value = fog.density;
+	// 		uniforms.fogDensity.value = fog.density;
 
-		}
+	// 	}
 
-	}
+	// }
 
-	function refreshUniformsLambert( uniforms, material ) {
+	// function refreshUniformsLambert( uniforms, material ) {
 
-		// if ( material.emissiveMap ) {
+	// 	// if ( material.emissiveMap ) {
 
-		// 	uniforms.emissiveMap.value = material.emissiveMap;
+	// 	// 	uniforms.emissiveMap.value = material.emissiveMap;
 
-		// }
+	// 	// }
 
-	}
+	// }
 
-	function refreshUniformsPhong( uniforms, material ) {
+	// function refreshUniformsPhong( uniforms, material ) {
 
-		uniforms.specular.value = material.specular;
-		uniforms.shininess.value = Math.max( material.shininess, 1e-4 ); // to prevent pow( 0.0, 0.0 )
+	// 	uniforms.specular.value = material.specular;
+	// 	uniforms.shininess.value = Math.max( material.shininess, 1e-4 ); // to prevent pow( 0.0, 0.0 )
 
-		// if ( material.emissiveMap ) {
+	// 	// if ( material.emissiveMap ) {
 
-		// 	uniforms.emissiveMap.value = material.emissiveMap;
+	// 	// 	uniforms.emissiveMap.value = material.emissiveMap;
 
-		// }
+	// 	// }
 
-		// if ( material.bumpMap ) {
+	// 	// if ( material.bumpMap ) {
 
-		// 	uniforms.bumpMap.value = material.bumpMap;
-		// 	uniforms.bumpScale.value = material.bumpScale;
+	// 	// 	uniforms.bumpMap.value = material.bumpMap;
+	// 	// 	uniforms.bumpScale.value = material.bumpScale;
 
-		// }
+	// 	// }
 
-		// if ( material.normalMap ) {
+	// 	// if ( material.normalMap ) {
 
-		// 	uniforms.normalMap.value = material.normalMap;
-		// 	uniforms.normalScale.value.copy( material.normalScale );
+	// 	// 	uniforms.normalMap.value = material.normalMap;
+	// 	// 	uniforms.normalScale.value.copy( material.normalScale );
 
-		// }
+	// 	// }
 
-		// if ( material.displacementMap ) {
+	// 	// if ( material.displacementMap ) {
 
-		// 	uniforms.displacementMap.value = material.displacementMap;
-		// 	uniforms.displacementScale.value = material.displacementScale;
-		// 	uniforms.displacementBias.value = material.displacementBias;
+	// 	// 	uniforms.displacementMap.value = material.displacementMap;
+	// 	// 	uniforms.displacementScale.value = material.displacementScale;
+	// 	// 	uniforms.displacementBias.value = material.displacementBias;
 
-		// }
+	// 	// }
 
-	}
+	// }
 
 	// function refreshUniformsToon( uniforms, material ) {
 
@@ -22375,6 +21657,125 @@ SphereBufferGeometry.prototype.constructor = SphereBufferGeometry;
 
 /**
  * @author mrdoob / http://mrdoob.com/
+ * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Plane.as
+ */
+
+function PlaneGeometry( width, height, widthSegments, heightSegments ) {
+
+	Geometry.call( this );
+
+	this.type = 'PlaneGeometry';
+
+	this.parameters = {
+		width: width,
+		height: height,
+		widthSegments: widthSegments,
+		heightSegments: heightSegments
+	};
+
+	this.fromBufferGeometry( new PlaneBufferGeometry( width, height, widthSegments, heightSegments ) );
+
+}
+
+PlaneGeometry.prototype = Object.create( Geometry.prototype );
+PlaneGeometry.prototype.constructor = PlaneGeometry;
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author Mugen87 / https://github.com/Mugen87
+ *
+ * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Plane.as
+ */
+
+function PlaneBufferGeometry( width, height, widthSegments, heightSegments ) {
+
+	BufferGeometry.call( this );
+
+	this.type = 'PlaneBufferGeometry';
+
+	this.parameters = {
+		width: width,
+		height: height,
+		widthSegments: widthSegments,
+		heightSegments: heightSegments
+	};
+
+	var width_half = width / 2;
+	var height_half = height / 2;
+
+	var gridX = Math.floor( widthSegments ) || 1;
+	var gridY = Math.floor( heightSegments ) || 1;
+
+	var gridX1 = gridX + 1;
+	var gridY1 = gridY + 1;
+
+	var segment_width = width / gridX;
+	var segment_height = height / gridY;
+
+	var ix, iy;
+
+	// buffers
+
+	var indices = [];
+	var vertices = [];
+	var normals = [];
+	var uvs = [];
+
+	// generate vertices, normals and uvs
+
+	for ( iy = 0; iy < gridY1; iy ++ ) {
+
+		var y = iy * segment_height - height_half;
+
+		for ( ix = 0; ix < gridX1; ix ++ ) {
+
+			var x = ix * segment_width - width_half;
+
+			vertices.push( x, - y, 0 );
+
+			normals.push( 0, 0, 1 );
+
+			uvs.push( ix / gridX );
+			uvs.push( 1 - ( iy / gridY ) );
+
+		}
+
+	}
+
+	// indices
+
+	for ( iy = 0; iy < gridY; iy ++ ) {
+
+		for ( ix = 0; ix < gridX; ix ++ ) {
+
+			var a = ix + gridX1 * iy;
+			var b = ix + gridX1 * ( iy + 1 );
+			var c = ( ix + 1 ) + gridX1 * ( iy + 1 );
+			var d = ( ix + 1 ) + gridX1 * iy;
+
+			// faces
+
+			indices.push( a, b, d );
+			indices.push( b, c, d );
+
+		}
+
+	}
+
+	// build geometry
+
+	this.setIndex( indices );
+	this.addAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
+	this.addAttribute( 'normal', new Float32BufferAttribute( normals, 3 ) );
+	this.addAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );
+
+}
+
+PlaneBufferGeometry.prototype = Object.create( BufferGeometry.prototype );
+PlaneBufferGeometry.prototype.constructor = PlaneBufferGeometry;
+
+/**
+ * @author mrdoob / http://mrdoob.com/
  */
 
 function CylinderGeometry( radiusTop, radiusBottom, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength ) {
@@ -22680,6 +22081,198 @@ function CylinderBufferGeometry( radiusTop, radiusBottom, height, radialSegments
 
 CylinderBufferGeometry.prototype = Object.create( BufferGeometry.prototype );
 CylinderBufferGeometry.prototype.constructor = CylinderBufferGeometry;
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Cube.as
+ */
+
+function BoxGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) {
+
+	Geometry.call( this );
+
+	this.type = 'BoxGeometry';
+
+	this.parameters = {
+		width: width,
+		height: height,
+		depth: depth,
+		widthSegments: widthSegments,
+		heightSegments: heightSegments,
+		depthSegments: depthSegments
+	};
+
+	this.fromBufferGeometry( new BoxBufferGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) );
+	this.mergeVertices();
+
+}
+
+BoxGeometry.prototype = Object.create( Geometry.prototype );
+BoxGeometry.prototype.constructor = BoxGeometry;
+
+/**
+ * @author Mugen87 / https://github.com/Mugen87
+ */
+
+function BoxBufferGeometry( width, height, depth, widthSegments, heightSegments, depthSegments ) {
+
+	BufferGeometry.call( this );
+
+	this.type = 'BoxBufferGeometry';
+
+	this.parameters = {
+		width: width,
+		height: height,
+		depth: depth,
+		widthSegments: widthSegments,
+		heightSegments: heightSegments,
+		depthSegments: depthSegments
+	};
+
+	var scope = this;
+
+	// segments
+
+	widthSegments = Math.floor( widthSegments ) || 1;
+	heightSegments = Math.floor( heightSegments ) || 1;
+	depthSegments = Math.floor( depthSegments ) || 1;
+
+	// buffers
+
+	var indices = [];
+	var vertices = [];
+	var normals = [];
+	var uvs = [];
+
+	// helper variables
+
+	var numberOfVertices = 0;
+	var groupStart = 0;
+
+	// build each side of the box geometry
+
+	buildPlane( 'z', 'y', 'x', - 1, - 1, depth, height,   width,  depthSegments, heightSegments, 0 ); // px
+	buildPlane( 'z', 'y', 'x',   1, - 1, depth, height, - width,  depthSegments, heightSegments, 1 ); // nx
+	buildPlane( 'x', 'z', 'y',   1,   1, width, depth,    height, widthSegments, depthSegments,  2 ); // py
+	buildPlane( 'x', 'z', 'y',   1, - 1, width, depth,  - height, widthSegments, depthSegments,  3 ); // ny
+	buildPlane( 'x', 'y', 'z',   1, - 1, width, height,   depth,  widthSegments, heightSegments, 4 ); // pz
+	buildPlane( 'x', 'y', 'z', - 1, - 1, width, height, - depth,  widthSegments, heightSegments, 5 ); // nz
+
+	// build geometry
+
+	this.setIndex( indices );
+	this.addAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
+	this.addAttribute( 'normal', new Float32BufferAttribute( normals, 3 ) );
+	this.addAttribute( 'uv', new Float32BufferAttribute( uvs, 2 ) );
+
+	function buildPlane( u, v, w, udir, vdir, width, height, depth, gridX, gridY, materialIndex ) {
+
+		var segmentWidth = width / gridX;
+		var segmentHeight = height / gridY;
+
+		var widthHalf = width / 2;
+		var heightHalf = height / 2;
+		var depthHalf = depth / 2;
+
+		var gridX1 = gridX + 1;
+		var gridY1 = gridY + 1;
+
+		var vertexCounter = 0;
+		var groupCount = 0;
+
+		var ix, iy;
+
+		var vector = new Vector3();
+
+		// generate vertices, normals and uvs
+
+		for ( iy = 0; iy < gridY1; iy ++ ) {
+
+			var y = iy * segmentHeight - heightHalf;
+
+			for ( ix = 0; ix < gridX1; ix ++ ) {
+
+				var x = ix * segmentWidth - widthHalf;
+
+				// set values to correct vector component
+
+				vector[ u ] = x * udir;
+				vector[ v ] = y * vdir;
+				vector[ w ] = depthHalf;
+
+				// now apply vector to vertex buffer
+
+				vertices.push( vector.x, vector.y, vector.z );
+
+				// set values to correct vector component
+
+				vector[ u ] = 0;
+				vector[ v ] = 0;
+				vector[ w ] = depth > 0 ? 1 : - 1;
+
+				// now apply vector to normal buffer
+
+				normals.push( vector.x, vector.y, vector.z );
+
+				// uvs
+
+				uvs.push( ix / gridX );
+				uvs.push( 1 - ( iy / gridY ) );
+
+				// counters
+
+				vertexCounter += 1;
+
+			}
+
+		}
+
+		// indices
+
+		// 1. you need three indices to draw a single face
+		// 2. a single segment consists of two faces
+		// 3. so we need to generate six (2*3) indices per segment
+
+		for ( iy = 0; iy < gridY; iy ++ ) {
+
+			for ( ix = 0; ix < gridX; ix ++ ) {
+
+				var a = numberOfVertices + ix + gridX1 * iy;
+				var b = numberOfVertices + ix + gridX1 * ( iy + 1 );
+				var c = numberOfVertices + ( ix + 1 ) + gridX1 * ( iy + 1 );
+				var d = numberOfVertices + ( ix + 1 ) + gridX1 * iy;
+
+				// faces
+
+				indices.push( a, b, d );
+				indices.push( b, c, d );
+
+				// increase counter
+
+				groupCount += 6;
+
+			}
+
+		}
+
+		// add a group to the geometry. this will ensure multi material support
+
+		scope.addGroup( groupStart, groupCount, materialIndex );
+
+		// calculate new start value for groups
+
+		groupStart += groupCount;
+
+		// update total number of vertices
+
+		numberOfVertices += vertexCounter;
+
+	}
+
+}
+
+BoxBufferGeometry.prototype = Object.create( BufferGeometry.prototype );
+BoxBufferGeometry.prototype.constructor = BoxBufferGeometry;
 
 /**
  * @author mrdoob / http://mrdoob.com/
@@ -23526,78 +23119,6 @@ Loader.Handlers = {
 
 /**
  * @author mrdoob / http://mrdoob.com/
- */
-
-function LightShadow( camera ) {
-
-	this.camera = camera;
-
-	this.bias = 0;
-	this.radius = 1;
-
-	this.mapSize = new Vector2( 512, 512 );
-
-	this.map = null;
-	this.matrix = new Matrix4();
-
-}
-
-Object.assign( LightShadow.prototype, {
-
-	copy: function ( source ) {
-
-		this.camera = source.camera.clone();
-
-		this.bias = source.bias;
-		this.radius = source.radius;
-
-		this.mapSize.copy( source.mapSize );
-
-		return this;
-
-	},
-
-	clone: function () {
-
-		return new this.constructor().copy( this );
-
-	},
-
-	toJSON: function () {
-
-		var object = {};
-
-		if ( this.bias !== 0 ) object.bias = this.bias;
-		if ( this.radius !== 1 ) object.radius = this.radius;
-		if ( this.mapSize.x !== 512 || this.mapSize.y !== 512 ) object.mapSize = this.mapSize.toArray();
-
-		object.camera = this.camera.toJSON( false ).object;
-		delete object.camera.matrix;
-
-		return object;
-
-	}
-
-} );
-
-/**
- * @author mrdoob / http://mrdoob.com/
- */
-
-function DirectionalLightShadow( ) {
-
-	LightShadow.call( this, new OrthographicCamera( - 5, 5, 5, - 5, 0.5, 500 ) );
-
-}
-
-DirectionalLightShadow.prototype = Object.assign( Object.create( LightShadow.prototype ), {
-
-	constructor: DirectionalLightShadow
-
-} );
-
-/**
- * @author mrdoob / http://mrdoob.com/
  * @author alteredq / http://alteredqualia.com/
  */
 
@@ -23653,6 +23174,7 @@ Light.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 } );
 
+// import { DirectionalLightShadow } from './DirectionalLightShadow';
 /**
  * @author mrdoob / http://mrdoob.com/
  * @author alteredq / http://alteredqualia.com/
@@ -23669,7 +23191,7 @@ function DirectionalLight( color, intensity ) {
 
 	this.target = new Object3D();
 
-	this.shadow = new DirectionalLightShadow();
+	// this.shadow = new DirectionalLightShadow();
 
 }
 
@@ -23685,7 +23207,7 @@ DirectionalLight.prototype = Object.assign( Object.create( Light.prototype ), {
 
 		this.target = source.target.clone();
 
-		this.shadow = source.shadow.clone();
+		// this.shadow = source.shadow.clone();
 
 		return this;
 
@@ -23712,6 +23234,296 @@ AmbientLight.prototype = Object.assign( Object.create( Light.prototype ), {
 	constructor: AmbientLight,
 
 	isAmbientLight: true
+
+} );
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author mikael emtinger / http://gomo.se/
+ * @author WestLangley / http://github.com/WestLangley
+*/
+
+function Camera() {
+
+	Object3D.call( this );
+
+	this.type = 'Camera';
+
+	this.matrixWorldInverse = new Matrix4();
+	this.projectionMatrix = new Matrix4();
+
+}
+
+Camera.prototype = Object.create( Object3D.prototype );
+Camera.prototype.constructor = Camera;
+
+Camera.prototype.isCamera = true;
+
+Camera.prototype.getWorldDirection = function () {
+
+	var quaternion = new Quaternion();
+
+	return function getWorldDirection( optionalTarget ) {
+
+		var result = optionalTarget || new Vector3();
+
+		this.getWorldQuaternion( quaternion );
+
+		return result.set( 0, 0, - 1 ).applyQuaternion( quaternion );
+
+	};
+
+}();
+
+Camera.prototype.lookAt = function () {
+
+	// This routine does not support cameras with rotated and/or translated parent(s)
+
+	var m1 = new Matrix4();
+
+	return function lookAt( vector ) {
+
+		m1.lookAt( this.position, vector, this.up );
+
+		this.quaternion.setFromRotationMatrix( m1 );
+
+	};
+
+}();
+
+Camera.prototype.clone = function () {
+
+	return new this.constructor().copy( this );
+
+};
+
+Camera.prototype.copy = function ( source ) {
+
+	Object3D.prototype.copy.call( this, source );
+
+	this.matrixWorldInverse.copy( source.matrixWorldInverse );
+	this.projectionMatrix.copy( source.projectionMatrix );
+
+	return this;
+
+};
+
+/**
+ * @author mrdoob / http://mrdoob.com/
+ * @author greggman / http://games.greggman.com/
+ * @author zz85 / http://www.lab4games.net/zz85/blog
+ * @author tschw
+ */
+
+function PerspectiveCamera( fov, aspect, near, far ) {
+
+	Camera.call( this );
+
+	this.type = 'PerspectiveCamera';
+
+	this.fov = fov !== undefined ? fov : 50;
+	this.zoom = 1;
+
+	this.near = near !== undefined ? near : 0.1;
+	this.far = far !== undefined ? far : 2000;
+	this.focus = 10;
+
+	this.aspect = aspect !== undefined ? aspect : 1;
+	this.view = null;
+
+	this.filmGauge = 35;	// width of the film (default in millimeters)
+	this.filmOffset = 0;	// horizontal film offset (same unit as gauge)
+
+	this.updateProjectionMatrix();
+
+}
+
+PerspectiveCamera.prototype = Object.assign( Object.create( Camera.prototype ), {
+
+	constructor: PerspectiveCamera,
+
+	isPerspectiveCamera: true,
+
+	copy: function ( source ) {
+
+		Camera.prototype.copy.call( this, source );
+
+		this.fov = source.fov;
+		this.zoom = source.zoom;
+
+		this.near = source.near;
+		this.far = source.far;
+		this.focus = source.focus;
+
+		this.aspect = source.aspect;
+		this.view = source.view === null ? null : Object.assign( {}, source.view );
+
+		this.filmGauge = source.filmGauge;
+		this.filmOffset = source.filmOffset;
+
+		return this;
+
+	},
+
+	/**
+	 * Sets the FOV by focal length in respect to the current .filmGauge.
+	 *
+	 * The default film gauge is 35, so that the focal length can be specified for
+	 * a 35mm (full frame) camera.
+	 *
+	 * Values for focal length and film gauge must have the same unit.
+	 */
+	setFocalLength: function ( focalLength ) {
+
+		// see http://www.bobatkins.com/photography/technical/field_of_view.html
+		var vExtentSlope = 0.5 * this.getFilmHeight() / focalLength;
+
+		this.fov = _Math.RAD2DEG * 2 * Math.atan( vExtentSlope );
+		this.updateProjectionMatrix();
+
+	},
+
+	/**
+	 * Calculates the focal length from the current .fov and .filmGauge.
+	 */
+	getFocalLength: function () {
+
+		var vExtentSlope = Math.tan( _Math.DEG2RAD * 0.5 * this.fov );
+
+		return 0.5 * this.getFilmHeight() / vExtentSlope;
+
+	},
+
+	getEffectiveFOV: function () {
+
+		return _Math.RAD2DEG * 2 * Math.atan(
+				Math.tan( _Math.DEG2RAD * 0.5 * this.fov ) / this.zoom );
+
+	},
+
+	getFilmWidth: function () {
+
+		// film not completely covered in portrait format (aspect < 1)
+		return this.filmGauge * Math.min( this.aspect, 1 );
+
+	},
+
+	getFilmHeight: function () {
+
+		// film not completely covered in landscape format (aspect > 1)
+		return this.filmGauge / Math.max( this.aspect, 1 );
+
+	},
+
+	/**
+	 * Sets an offset in a larger frustum. This is useful for multi-window or
+	 * multi-monitor/multi-machine setups.
+	 *
+	 * For example, if you have 3x2 monitors and each monitor is 1920x1080 and
+	 * the monitors are in grid like this
+	 *
+	 *   +---+---+---+
+	 *   | A | B | C |
+	 *   +---+---+---+
+	 *   | D | E | F |
+	 *   +---+---+---+
+	 *
+	 * then for each monitor you would call it like this
+	 *
+	 *   var w = 1920;
+	 *   var h = 1080;
+	 *   var fullWidth = w * 3;
+	 *   var fullHeight = h * 2;
+	 *
+	 *   --A--
+	 *   camera.setOffset( fullWidth, fullHeight, w * 0, h * 0, w, h );
+	 *   --B--
+	 *   camera.setOffset( fullWidth, fullHeight, w * 1, h * 0, w, h );
+	 *   --C--
+	 *   camera.setOffset( fullWidth, fullHeight, w * 2, h * 0, w, h );
+	 *   --D--
+	 *   camera.setOffset( fullWidth, fullHeight, w * 0, h * 1, w, h );
+	 *   --E--
+	 *   camera.setOffset( fullWidth, fullHeight, w * 1, h * 1, w, h );
+	 *   --F--
+	 *   camera.setOffset( fullWidth, fullHeight, w * 2, h * 1, w, h );
+	 *
+	 *   Note there is no reason monitors have to be the same size or in a grid.
+	 */
+	setViewOffset: function ( fullWidth, fullHeight, x, y, width, height ) {
+
+		this.aspect = fullWidth / fullHeight;
+
+		this.view = {
+			fullWidth: fullWidth,
+			fullHeight: fullHeight,
+			offsetX: x,
+			offsetY: y,
+			width: width,
+			height: height
+		};
+
+		this.updateProjectionMatrix();
+
+	},
+
+	clearViewOffset: function() {
+
+		this.view = null;
+		this.updateProjectionMatrix();
+
+	},
+
+	updateProjectionMatrix: function () {
+
+		var near = this.near,
+			top = near * Math.tan(
+					_Math.DEG2RAD * 0.5 * this.fov ) / this.zoom,
+			height = 2 * top,
+			width = this.aspect * height,
+			left = - 0.5 * width,
+			view = this.view;
+
+		if ( view !== null ) {
+
+			var fullWidth = view.fullWidth,
+				fullHeight = view.fullHeight;
+
+			left += view.offsetX * width / fullWidth;
+			top -= view.offsetY * height / fullHeight;
+			width *= view.width / fullWidth;
+			height *= view.height / fullHeight;
+
+		}
+
+		var skew = this.filmOffset;
+		if ( skew !== 0 ) left += near * skew / this.getFilmWidth();
+
+		this.projectionMatrix.makePerspective( left, left + width, top, top - height, near, this.far );
+
+	},
+
+	// toJSON: function ( meta ) {
+
+	// 	var data = Object3D.prototype.toJSON.call( this, meta );
+
+	// 	data.object.fov = this.fov;
+	// 	data.object.zoom = this.zoom;
+
+	// 	data.object.near = this.near;
+	// 	data.object.far = this.far;
+	// 	data.object.focus = this.focus;
+
+	// 	data.object.aspect = this.aspect;
+
+	// 	if ( this.view !== null ) data.object.view = Object.assign( {}, this.view );
+
+	// 	data.object.filmGauge = this.filmGauge;
+	// 	data.object.filmOffset = this.filmOffset;
+
+	// 	return data;
+
+	// }
 
 } );
 
@@ -29514,4 +29326,4 @@ function AxisHelper( size ) {
 AxisHelper.prototype = Object.create( LineSegments.prototype );
 AxisHelper.prototype.constructor = AxisHelper;
 
-export { WebGLRenderTarget, WebGLRenderer, ShaderLib, UniformsLib, UniformsUtils, ShaderChunk, Scene, Sprite, Mesh, Points, Group, Texture, TextureLoader, DefaultLoadingManager, LoadingManager, ImageLoader, FileLoader, Loader, Cache, DirectionalLightShadow, DirectionalLight, AmbientLight, LightShadow, Light, PerspectiveCamera, Camera, VectorKeyframeTrack, StringKeyframeTrack, QuaternionKeyframeTrack, NumberKeyframeTrack, ColorKeyframeTrack, BooleanKeyframeTrack, PropertyMixer, PropertyBinding, KeyframeTrack, AnimationUtils, AnimationObjectGroup, AnimationMixer, AnimationClip, Uniform, InstancedBufferGeometry, BufferGeometry, GeometryIdCount, Geometry, InterleavedBufferAttribute, InstancedInterleavedBuffer, InterleavedBuffer, InstancedBufferAttribute, Face3, Object3D, Raycaster, Layers, EventDispatcher, Clock, QuaternionLinearInterpolant, LinearInterpolant, DiscreteInterpolant, CubicInterpolant, Interpolant, Triangle, _Math as Math, Spherical, Cylindrical, Plane, Frustum, Sphere, Ray, Matrix4, Matrix3, Box3, Box2, Line3, Euler, Vector4, Vector3, Vector2, Quaternion, Color, BoxHelper, ArrowHelper, AxisHelper, WireframeGeometry, IcosahedronGeometry, IcosahedronBufferGeometry, SphereGeometry, SphereBufferGeometry, PlaneGeometry, PlaneBufferGeometry, CylinderGeometry, CylinderBufferGeometry, BoxGeometry, BoxBufferGeometry, SpriteMaterial, RawShaderMaterial, ShaderMaterial, PointsMaterial, MeshBasicMaterial, Material, Float64BufferAttribute, Float32BufferAttribute, Uint32BufferAttribute, Int32BufferAttribute, Uint16BufferAttribute, Int16BufferAttribute, Uint8ClampedBufferAttribute, Uint8BufferAttribute, Int8BufferAttribute, BufferAttribute, REVISION, MOUSE, CullFaceNone, CullFaceBack, CullFaceFront, CullFaceFrontBack, FrontFaceDirectionCW, FrontFaceDirectionCCW, BasicShadowMap, PCFShadowMap, PCFSoftShadowMap, FrontSide, BackSide, DoubleSide, FlatShading, SmoothShading, NoColors, FaceColors, VertexColors, NoBlending, NormalBlending, AdditiveBlending, SubtractiveBlending, MultiplyBlending, CustomBlending, AddEquation, SubtractEquation, ReverseSubtractEquation, MinEquation, MaxEquation, ZeroFactor, OneFactor, SrcColorFactor, OneMinusSrcColorFactor, SrcAlphaFactor, OneMinusSrcAlphaFactor, DstAlphaFactor, OneMinusDstAlphaFactor, DstColorFactor, OneMinusDstColorFactor, SrcAlphaSaturateFactor, NeverDepth, AlwaysDepth, LessDepth, LessEqualDepth, EqualDepth, GreaterEqualDepth, GreaterDepth, NotEqualDepth, MultiplyOperation, MixOperation, AddOperation, NoToneMapping, LinearToneMapping, ReinhardToneMapping, Uncharted2ToneMapping, CineonToneMapping, UVMapping, CubeReflectionMapping, CubeRefractionMapping, EquirectangularReflectionMapping, EquirectangularRefractionMapping, SphericalReflectionMapping, CubeUVReflectionMapping, CubeUVRefractionMapping, RepeatWrapping, ClampToEdgeWrapping, MirroredRepeatWrapping, NearestFilter, NearestMipMapNearestFilter, NearestMipMapLinearFilter, LinearFilter, LinearMipMapNearestFilter, LinearMipMapLinearFilter, UnsignedByteType, ByteType, ShortType, UnsignedShortType, IntType, UnsignedIntType, FloatType, HalfFloatType, UnsignedShort4444Type, UnsignedShort5551Type, UnsignedShort565Type, UnsignedInt248Type, AlphaFormat, RGBFormat, RGBAFormat, LuminanceFormat, LuminanceAlphaFormat, RGBEFormat, DepthFormat, DepthStencilFormat, RGB_S3TC_DXT1_Format, RGBA_S3TC_DXT1_Format, RGBA_S3TC_DXT3_Format, RGBA_S3TC_DXT5_Format, RGB_PVRTC_4BPPV1_Format, RGB_PVRTC_2BPPV1_Format, RGBA_PVRTC_4BPPV1_Format, RGBA_PVRTC_2BPPV1_Format, RGB_ETC1_Format, LoopOnce, LoopRepeat, LoopPingPong, InterpolateDiscrete, InterpolateLinear, InterpolateSmooth, ZeroCurvatureEnding, ZeroSlopeEnding, WrapAroundEnding, TrianglesDrawMode, TriangleStripDrawMode, TriangleFanDrawMode, LinearEncoding, sRGBEncoding, GammaEncoding, RGBEEncoding, LogLuvEncoding, RGBM7Encoding, RGBM16Encoding, RGBDEncoding, BasicDepthPacking, RGBADepthPacking };
+export { WebGLRenderTarget, WebGLRenderer, ShaderLib, UniformsLib, UniformsUtils, ShaderChunk, Scene, Sprite, Mesh, Points, Group, Texture, TextureLoader, DefaultLoadingManager, LoadingManager, ImageLoader, FileLoader, Loader, Cache, DirectionalLight, AmbientLight, Light, PerspectiveCamera, Camera, VectorKeyframeTrack, StringKeyframeTrack, QuaternionKeyframeTrack, NumberKeyframeTrack, ColorKeyframeTrack, BooleanKeyframeTrack, PropertyMixer, PropertyBinding, KeyframeTrack, AnimationUtils, AnimationObjectGroup, AnimationMixer, AnimationClip, Uniform, InstancedBufferGeometry, BufferGeometry, GeometryIdCount, Geometry, InterleavedBufferAttribute, InstancedInterleavedBuffer, InterleavedBuffer, InstancedBufferAttribute, Face3, Object3D, Raycaster, Layers, EventDispatcher, Clock, QuaternionLinearInterpolant, LinearInterpolant, DiscreteInterpolant, CubicInterpolant, Interpolant, Triangle, _Math as Math, Spherical, Cylindrical, Plane, Frustum, Sphere, Ray, Matrix4, Matrix3, Box3, Box2, Line3, Euler, Vector4, Vector3, Vector2, Quaternion, Color, BoxHelper, ArrowHelper, AxisHelper, WireframeGeometry, IcosahedronGeometry, IcosahedronBufferGeometry, SphereGeometry, SphereBufferGeometry, PlaneGeometry, PlaneBufferGeometry, CylinderGeometry, CylinderBufferGeometry, BoxGeometry, BoxBufferGeometry, SpriteMaterial, RawShaderMaterial, ShaderMaterial, PointsMaterial, MeshBasicMaterial, Material, Float64BufferAttribute, Float32BufferAttribute, Uint32BufferAttribute, Int32BufferAttribute, Uint16BufferAttribute, Int16BufferAttribute, Uint8ClampedBufferAttribute, Uint8BufferAttribute, Int8BufferAttribute, BufferAttribute, REVISION, MOUSE, CullFaceNone, CullFaceBack, CullFaceFront, CullFaceFrontBack, FrontFaceDirectionCW, FrontFaceDirectionCCW, BasicShadowMap, PCFShadowMap, PCFSoftShadowMap, FrontSide, BackSide, DoubleSide, FlatShading, SmoothShading, NoColors, FaceColors, VertexColors, NoBlending, NormalBlending, AdditiveBlending, SubtractiveBlending, MultiplyBlending, CustomBlending, AddEquation, SubtractEquation, ReverseSubtractEquation, MinEquation, MaxEquation, ZeroFactor, OneFactor, SrcColorFactor, OneMinusSrcColorFactor, SrcAlphaFactor, OneMinusSrcAlphaFactor, DstAlphaFactor, OneMinusDstAlphaFactor, DstColorFactor, OneMinusDstColorFactor, SrcAlphaSaturateFactor, NeverDepth, AlwaysDepth, LessDepth, LessEqualDepth, EqualDepth, GreaterEqualDepth, GreaterDepth, NotEqualDepth, MultiplyOperation, MixOperation, AddOperation, NoToneMapping, LinearToneMapping, ReinhardToneMapping, Uncharted2ToneMapping, CineonToneMapping, UVMapping, CubeReflectionMapping, CubeRefractionMapping, EquirectangularReflectionMapping, EquirectangularRefractionMapping, SphericalReflectionMapping, CubeUVReflectionMapping, CubeUVRefractionMapping, RepeatWrapping, ClampToEdgeWrapping, MirroredRepeatWrapping, NearestFilter, NearestMipMapNearestFilter, NearestMipMapLinearFilter, LinearFilter, LinearMipMapNearestFilter, LinearMipMapLinearFilter, UnsignedByteType, ByteType, ShortType, UnsignedShortType, IntType, UnsignedIntType, FloatType, HalfFloatType, UnsignedShort4444Type, UnsignedShort5551Type, UnsignedShort565Type, UnsignedInt248Type, AlphaFormat, RGBFormat, RGBAFormat, LuminanceFormat, LuminanceAlphaFormat, RGBEFormat, DepthFormat, DepthStencilFormat, RGB_S3TC_DXT1_Format, RGBA_S3TC_DXT1_Format, RGBA_S3TC_DXT3_Format, RGBA_S3TC_DXT5_Format, RGB_PVRTC_4BPPV1_Format, RGB_PVRTC_2BPPV1_Format, RGBA_PVRTC_4BPPV1_Format, RGBA_PVRTC_2BPPV1_Format, RGB_ETC1_Format, LoopOnce, LoopRepeat, LoopPingPong, InterpolateDiscrete, InterpolateLinear, InterpolateSmooth, ZeroCurvatureEnding, ZeroSlopeEnding, WrapAroundEnding, TrianglesDrawMode, TriangleStripDrawMode, TriangleFanDrawMode, LinearEncoding, sRGBEncoding, GammaEncoding, RGBEEncoding, LogLuvEncoding, RGBM7Encoding, RGBM16Encoding, RGBDEncoding, BasicDepthPacking, RGBADepthPacking };

@@ -8,11 +8,11 @@ import { SpritePlugin } from './webgl/plugins/SpritePlugin';
 // import { WebGLShadowMap } from './webgl/WebGLShadowMap';
 import { ShaderMaterial } from '../materials/ShaderMaterial';
 import { Mesh } from '../objects/Mesh';
-import { BoxBufferGeometry } from '../geometries/BoxGeometry';
-import { PlaneBufferGeometry } from '../geometries/PlaneGeometry';
+// import { BoxBufferGeometry } from '../geometries/BoxGeometry';
+// import { PlaneBufferGeometry } from '../geometries/PlaneGeometry';
 import { MeshBasicMaterial } from '../materials/MeshBasicMaterial';
-import { PerspectiveCamera } from '../cameras/PerspectiveCamera';
-import { OrthographicCamera } from '../cameras/OrthographicCamera';
+// import { PerspectiveCamera } from '../cameras/PerspectiveCamera';
+// import { OrthographicCamera } from '../cameras/OrthographicCamera';
 import { WebGLIndexedBufferRenderer } from './webgl/WebGLIndexedBufferRenderer';
 import { WebGLBufferRenderer } from './webgl/WebGLBufferRenderer';
 import { WebGLLights } from './webgl/WebGLLights';
@@ -1167,60 +1167,60 @@ function WebGLRenderer( parameters ) {
 
 		}
 
-		if ( background && background.isCubeTexture ) {
+		// if ( background && background.isCubeTexture ) {
 
-			if ( backgroundBoxCamera === undefined ) {
+		// 	if ( backgroundBoxCamera === undefined ) {
 
-				backgroundBoxCamera = new PerspectiveCamera();
+		// 		backgroundBoxCamera = new PerspectiveCamera();
 
-				backgroundBoxMesh = new Mesh(
-					new BoxBufferGeometry( 5, 5, 5 ),
-					new ShaderMaterial( {
-						uniforms: ShaderLib.cube.uniforms,
-						vertexShader: ShaderLib.cube.vertexShader,
-						fragmentShader: ShaderLib.cube.fragmentShader,
-						side: BackSide,
-						depthTest: false,
-						depthWrite: false,
-						fog: false
-					} )
-				);
+		// 		backgroundBoxMesh = new Mesh(
+		// 			new BoxBufferGeometry( 5, 5, 5 ),
+		// 			new ShaderMaterial( {
+		// 				uniforms: ShaderLib.cube.uniforms,
+		// 				vertexShader: ShaderLib.cube.vertexShader,
+		// 				fragmentShader: ShaderLib.cube.fragmentShader,
+		// 				side: BackSide,
+		// 				depthTest: false,
+		// 				depthWrite: false,
+		// 				fog: false
+		// 			} )
+		// 		);
 
-			}
+		// 	}
 
-			backgroundBoxCamera.projectionMatrix.copy( camera.projectionMatrix );
+		// 	backgroundBoxCamera.projectionMatrix.copy( camera.projectionMatrix );
 
-			backgroundBoxCamera.matrixWorld.extractRotation( camera.matrixWorld );
-			backgroundBoxCamera.matrixWorldInverse.getInverse( backgroundBoxCamera.matrixWorld );
+		// 	backgroundBoxCamera.matrixWorld.extractRotation( camera.matrixWorld );
+		// 	backgroundBoxCamera.matrixWorldInverse.getInverse( backgroundBoxCamera.matrixWorld );
 
 
-			backgroundBoxMesh.material.uniforms[ "tCube" ].value = background;
-			backgroundBoxMesh.modelViewMatrix.multiplyMatrices( backgroundBoxCamera.matrixWorldInverse, backgroundBoxMesh.matrixWorld );
+		// 	backgroundBoxMesh.material.uniforms[ "tCube" ].value = background;
+		// 	backgroundBoxMesh.modelViewMatrix.multiplyMatrices( backgroundBoxCamera.matrixWorldInverse, backgroundBoxMesh.matrixWorld );
 
-			objects.update( backgroundBoxMesh );
+		// 	objects.update( backgroundBoxMesh );
 
-			_this.renderBufferDirect( backgroundBoxCamera, null, backgroundBoxMesh.geometry, backgroundBoxMesh.material, backgroundBoxMesh, null );
+		// 	_this.renderBufferDirect( backgroundBoxCamera, null, backgroundBoxMesh.geometry, backgroundBoxMesh.material, backgroundBoxMesh, null );
 
-		} else if ( background && background.isTexture ) {
+		// } else if ( background && background.isTexture ) {
 
-			if ( backgroundPlaneCamera === undefined ) {
+		// 	if ( backgroundPlaneCamera === undefined ) {
 
-				backgroundPlaneCamera = new OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
+		// 		backgroundPlaneCamera = new OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
 
-				backgroundPlaneMesh = new Mesh(
-					new PlaneBufferGeometry( 2, 2 ),
-					new MeshBasicMaterial( { depthTest: false, depthWrite: false, fog: false } )
-				);
+		// 		backgroundPlaneMesh = new Mesh(
+		// 			new PlaneBufferGeometry( 2, 2 ),
+		// 			new MeshBasicMaterial( { depthTest: false, depthWrite: false, fog: false } )
+		// 		);
 
-			}
+		// 	}
 
-			backgroundPlaneMesh.material.map = background;
+		// 	backgroundPlaneMesh.material.map = background;
 
-			objects.update( backgroundPlaneMesh );
+		// 	objects.update( backgroundPlaneMesh );
 
-			_this.renderBufferDirect( backgroundPlaneCamera, null, backgroundPlaneMesh.geometry, backgroundPlaneMesh.material, backgroundPlaneMesh, null );
+		// 	_this.renderBufferDirect( backgroundPlaneCamera, null, backgroundPlaneMesh.geometry, backgroundPlaneMesh.material, backgroundPlaneMesh, null );
 
-		}
+		// }
 
 		//
 
@@ -1765,12 +1765,12 @@ function WebGLRenderer( parameters ) {
 
 			p_uniforms.set( _gl, camera, 'projectionMatrix' );
 
-			if ( capabilities.logarithmicDepthBuffer ) {
+			// if ( capabilities.logarithmicDepthBuffer ) {
 
-				p_uniforms.setValue( _gl, 'logDepthBufFC',
-					2.0 / ( Math.log( camera.far + 1.0 ) / Math.LN2 ) );
+			// 	p_uniforms.setValue( _gl, 'logDepthBufFC',
+			// 		2.0 / ( Math.log( camera.far + 1.0 ) / Math.LN2 ) );
 
-			}
+			// }
 
 
 			if ( camera !== _currentCamera ) {
@@ -1816,8 +1816,8 @@ function WebGLRenderer( parameters ) {
 
 			}
 
-			p_uniforms.set( _gl, _this, 'toneMappingExposure' );
-			p_uniforms.set( _gl, _this, 'toneMappingWhitePoint' );
+			// p_uniforms.set( _gl, _this, 'toneMappingExposure' );
+			// p_uniforms.set( _gl, _this, 'toneMappingWhitePoint' );
 
 		}
 
@@ -1869,11 +1869,11 @@ function WebGLRenderer( parameters ) {
 
 			// refresh uniforms common to several materials
 
-			if ( fog && material.fog ) {
+			// if ( fog && material.fog ) {
 
-				refreshUniformsFog( m_uniforms, fog );
+			// 	refreshUniformsFog( m_uniforms, fog );
 
-			}
+			// }
 
 			if ( material.isMeshBasicMaterial ||
 				material.isMeshLambertMaterial ||
@@ -1902,19 +1902,19 @@ function WebGLRenderer( parameters ) {
 			// 	refreshUniformsPoints( m_uniforms, material );
 
 			// } else 
-			if ( material.isMeshLambertMaterial ) {
+			// if ( material.isMeshLambertMaterial ) {
 
-				refreshUniformsLambert( m_uniforms, material );
+			// 	refreshUniformsLambert( m_uniforms, material );
 
-			// } else if ( material.isMeshToonMaterial ) {
+			// // } else if ( material.isMeshToonMaterial ) {
 
-				// refreshUniformsToon( m_uniforms, material );
+			// 	// refreshUniformsToon( m_uniforms, material );
 
-			} else if ( material.isMeshPhongMaterial ) {
+			// } else if ( material.isMeshPhongMaterial ) {
 
-				refreshUniformsPhong( m_uniforms, material );
+			// 	refreshUniformsPhong( m_uniforms, material );
 
-			}
+			// }
 			// } else if ( material.isMeshPhysicalMaterial ) {
 
 			// 	refreshUniformsPhysical( m_uniforms, material );
@@ -2064,7 +2064,7 @@ function WebGLRenderer( parameters ) {
 		//  WebGLRenderTargetCube will be flipped for backwards compatibility
 		//  WebGLRenderTargetCube.texture will be flipped because it's a Texture and NOT a CubeTexture
 		// this check must be handled differently, or removed entirely, if WebGLRenderTargetCube uses a CubeTexture in the future
-		uniforms.flipEnvMap.value = ( ! ( material.envMap && material.envMap.isCubeTexture ) ) ? 1 : - 1;
+		// uniforms.flipEnvMap.value = ( ! ( material.envMap && material.envMap.isCubeTexture ) ) ? 1 : - 1;
 
 		uniforms.reflectivity.value = material.reflectivity;
 		uniforms.refractionRatio.value = material.refractionRatio;
@@ -2106,67 +2106,67 @@ function WebGLRenderer( parameters ) {
 
 	}
 
-	function refreshUniformsFog( uniforms, fog ) {
+	// function refreshUniformsFog( uniforms, fog ) {
 
-		uniforms.fogColor.value = fog.color;
+	// 	uniforms.fogColor.value = fog.color;
 
-		if ( fog.isFog ) {
+	// 	if ( fog.isFog ) {
 
-			uniforms.fogNear.value = fog.near;
-			uniforms.fogFar.value = fog.far;
+	// 		uniforms.fogNear.value = fog.near;
+	// 		uniforms.fogFar.value = fog.far;
 
-		} else if ( fog.isFogExp2 ) {
+	// 	} else if ( fog.isFogExp2 ) {
 
-			uniforms.fogDensity.value = fog.density;
+	// 		uniforms.fogDensity.value = fog.density;
 
-		}
+	// 	}
 
-	}
+	// }
 
-	function refreshUniformsLambert( uniforms, material ) {
+	// function refreshUniformsLambert( uniforms, material ) {
 
-		// if ( material.emissiveMap ) {
+	// 	// if ( material.emissiveMap ) {
 
-		// 	uniforms.emissiveMap.value = material.emissiveMap;
+	// 	// 	uniforms.emissiveMap.value = material.emissiveMap;
 
-		// }
+	// 	// }
 
-	}
+	// }
 
-	function refreshUniformsPhong( uniforms, material ) {
+	// function refreshUniformsPhong( uniforms, material ) {
 
-		uniforms.specular.value = material.specular;
-		uniforms.shininess.value = Math.max( material.shininess, 1e-4 ); // to prevent pow( 0.0, 0.0 )
+	// 	uniforms.specular.value = material.specular;
+	// 	uniforms.shininess.value = Math.max( material.shininess, 1e-4 ); // to prevent pow( 0.0, 0.0 )
 
-		// if ( material.emissiveMap ) {
+	// 	// if ( material.emissiveMap ) {
 
-		// 	uniforms.emissiveMap.value = material.emissiveMap;
+	// 	// 	uniforms.emissiveMap.value = material.emissiveMap;
 
-		// }
+	// 	// }
 
-		// if ( material.bumpMap ) {
+	// 	// if ( material.bumpMap ) {
 
-		// 	uniforms.bumpMap.value = material.bumpMap;
-		// 	uniforms.bumpScale.value = material.bumpScale;
+	// 	// 	uniforms.bumpMap.value = material.bumpMap;
+	// 	// 	uniforms.bumpScale.value = material.bumpScale;
 
-		// }
+	// 	// }
 
-		// if ( material.normalMap ) {
+	// 	// if ( material.normalMap ) {
 
-		// 	uniforms.normalMap.value = material.normalMap;
-		// 	uniforms.normalScale.value.copy( material.normalScale );
+	// 	// 	uniforms.normalMap.value = material.normalMap;
+	// 	// 	uniforms.normalScale.value.copy( material.normalScale );
 
-		// }
+	// 	// }
 
-		// if ( material.displacementMap ) {
+	// 	// if ( material.displacementMap ) {
 
-		// 	uniforms.displacementMap.value = material.displacementMap;
-		// 	uniforms.displacementScale.value = material.displacementScale;
-		// 	uniforms.displacementBias.value = material.displacementBias;
+	// 	// 	uniforms.displacementMap.value = material.displacementMap;
+	// 	// 	uniforms.displacementScale.value = material.displacementScale;
+	// 	// 	uniforms.displacementBias.value = material.displacementBias;
 
-		// }
+	// 	// }
 
-	}
+	// }
 
 	// function refreshUniformsToon( uniforms, material ) {
 

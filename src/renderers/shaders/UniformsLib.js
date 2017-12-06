@@ -21,7 +21,7 @@ var UniformsLib = {
 		// alphaMap: { value: null },
 
 		// envMap: { value: null },
-		flipEnvMap: { value: - 1 },
+		// flipEnvMap: { value: - 1 },
 		reflectivity: { value: 1.0 },
 		refractionRatio: { value: 0.98 }
 

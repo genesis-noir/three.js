@@ -1,5 +1,5 @@
 import { Light } from './Light';
-import { DirectionalLightShadow } from './DirectionalLightShadow';
+// import { DirectionalLightShadow } from './DirectionalLightShadow';
 import { Object3D } from '../core/Object3D';
 
 /**
@@ -18,7 +18,7 @@ function DirectionalLight( color, intensity ) {
 
 	this.target = new Object3D();
 
-	this.shadow = new DirectionalLightShadow();
+	// this.shadow = new DirectionalLightShadow();
 
 }
 
@@ -34,7 +34,7 @@ DirectionalLight.prototype = Object.assign( Object.create( Light.prototype ), {
 
 		this.target = source.target.clone();
 
-		this.shadow = source.shadow.clone();
+		// this.shadow = source.shadow.clone();
 
 		return this;
 
