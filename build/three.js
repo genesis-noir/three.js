@@ -20294,112 +20294,6 @@
 	};
 
 	/**
-	 * @author alteredq / http://alteredqualia.com/
-	 *
-	 * parameters = {
-	 *  color: <hex>,
-	 *  opacity: <float>,
-	 *  map: new THREE.Texture( <Image> ),
-	 *
-	 *	uvOffset: new THREE.Vector2(),
-	 *	uvScale: new THREE.Vector2()
-	 * }
-	 */
-
-	function SpriteMaterial( parameters ) {
-
-		Material.call( this );
-
-		this.type = 'SpriteMaterial';
-
-		this.color = new Color( 0xffffff );
-		this.map = null;
-
-		this.rotation = 0;
-
-		this.fog = false;
-		this.lights = false;
-
-		this.setValues( parameters );
-
-	}
-
-	SpriteMaterial.prototype = Object.create( Material.prototype );
-	SpriteMaterial.prototype.constructor = SpriteMaterial;
-
-	SpriteMaterial.prototype.copy = function ( source ) {
-
-		Material.prototype.copy.call( this, source );
-
-		this.color.copy( source.color );
-		this.map = source.map;
-
-		this.rotation = source.rotation;
-
-		return this;
-
-	};
-
-	/**
-	 * @author mikael emtinger / http://gomo.se/
-	 * @author alteredq / http://alteredqualia.com/
-	 */
-
-	function Sprite( material ) {
-
-		Object3D.call( this );
-
-		this.type = 'Sprite';
-
-		this.material = ( material !== undefined ) ? material : new SpriteMaterial();
-
-	}
-
-	Sprite.prototype = Object.assign( Object.create( Object3D.prototype ), {
-
-		constructor: Sprite,
-
-		isSprite: true,
-
-		raycast: ( function () {
-
-			var matrixPosition = new Vector3();
-
-			return function raycast( raycaster, intersects ) {
-
-				matrixPosition.setFromMatrixPosition( this.matrixWorld );
-
-				var distanceSq = raycaster.ray.distanceSqToPoint( matrixPosition );
-				var guessSizeSq = this.scale.x * this.scale.y / 4;
-
-				if ( distanceSq > guessSizeSq ) {
-
-					return;
-
-				}
-
-				intersects.push( {
-
-					distance: Math.sqrt( distanceSq ),
-					point: this.position,
-					face: null,
-					object: this
-
-				} );
-
-			};
-
-		}() ),
-
-		clone: function () {
-
-			return new this.constructor( this.material ).copy( this );
-
-		}
-
-	} );
-
-	/**
 	 * @author mrdoob / http://mrdoob.com/
 	 * @author alteredq / http://alteredqualia.com/
 	 *
@@ -21906,6 +21800,53 @@
 
 	BoxBufferGeometry.prototype = Object.create( BufferGeometry.prototype );
 	BoxBufferGeometry.prototype.constructor = BoxBufferGeometry;
+
+	/**
+	 * @author alteredq / http://alteredqualia.com/
+	 *
+	 * parameters = {
+	 *  color: <hex>,
+	 *  opacity: <float>,
+	 *  map: new THREE.Texture( <Image> ),
+	 *
+	 *	uvOffset: new THREE.Vector2(),
+	 *	uvScale: new THREE.Vector2()
+	 * }
+	 */
+
+	function SpriteMaterial( parameters ) {
+
+		Material.call( this );
+
+		this.type = 'SpriteMaterial';
+
+		this.color = new Color( 0xffffff );
+		this.map = null;
+
+		this.rotation = 0;
+
+		this.fog = false;
+		this.lights = false;
+
+		this.setValues( parameters );
+
+	}
+
+	SpriteMaterial.prototype = Object.create( Material.prototype );
+	SpriteMaterial.prototype.constructor = SpriteMaterial;
+
+	SpriteMaterial.prototype.copy = function ( source ) {
+
+		Material.prototype.copy.call( this, source );
+
+		this.color.copy( source.color );
+		this.map = source.map;
+
+		this.rotation = source.rotation;
+
+		return this;
+
+	};
 
 	/**
 	 * @author mrdoob / http://mrdoob.com/
@@ -28966,7 +28907,6 @@
 	exports.UniformsUtils = UniformsUtils;
 	exports.ShaderChunk = ShaderChunk;
 	exports.Scene = Scene;
-	exports.Sprite = Sprite;
 	exports.Mesh = Mesh;
 	exports.Points = Points;
 	exports.Group = Group;

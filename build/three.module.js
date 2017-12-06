@@ -20288,112 +20288,6 @@ Scene.prototype.toJSON = function ( meta ) {
 };
 
 /**
- * @author alteredq / http://alteredqualia.com/
- *
- * parameters = {
- *  color: <hex>,
- *  opacity: <float>,
- *  map: new THREE.Texture( <Image> ),
- *
- *	uvOffset: new THREE.Vector2(),
- *	uvScale: new THREE.Vector2()
- * }
- */
-
-function SpriteMaterial( parameters ) {
-
-	Material.call( this );
-
-	this.type = 'SpriteMaterial';
-
-	this.color = new Color( 0xffffff );
-	this.map = null;
-
-	this.rotation = 0;
-
-	this.fog = false;
-	this.lights = false;
-
-	this.setValues( parameters );
-
-}
-
-SpriteMaterial.prototype = Object.create( Material.prototype );
-SpriteMaterial.prototype.constructor = SpriteMaterial;
-
-SpriteMaterial.prototype.copy = function ( source ) {
-
-	Material.prototype.copy.call( this, source );
-
-	this.color.copy( source.color );
-	this.map = source.map;
-
-	this.rotation = source.rotation;
-
-	return this;
-
-};
-
-/**
- * @author mikael emtinger / http://gomo.se/
- * @author alteredq / http://alteredqualia.com/
- */
-
-function Sprite( material ) {
-
-	Object3D.call( this );
-
-	this.type = 'Sprite';
-
-	this.material = ( material !== undefined ) ? material : new SpriteMaterial();
-
-}
-
-Sprite.prototype = Object.assign( Object.create( Object3D.prototype ), {
-
-	constructor: Sprite,
-
-	isSprite: true,
-
-	raycast: ( function () {
-
-		var matrixPosition = new Vector3();
-
-		return function raycast( raycaster, intersects ) {
-
-			matrixPosition.setFromMatrixPosition( this.matrixWorld );
-
-			var distanceSq = raycaster.ray.distanceSqToPoint( matrixPosition );
-			var guessSizeSq = this.scale.x * this.scale.y / 4;
-
-			if ( distanceSq > guessSizeSq ) {
-
-				return;
-
-			}
-
-			intersects.push( {
-
-				distance: Math.sqrt( distanceSq ),
-				point: this.position,
-				face: null,
-				object: this
-
-			} );
-
-		};
-
-	}() ),
-
-	clone: function () {
-
-		return new this.constructor( this.material ).copy( this );
-
-	}
-
-} );
-
-/**
  * @author mrdoob / http://mrdoob.com/
  * @author alteredq / http://alteredqualia.com/
  *
@@ -21900,6 +21794,53 @@ function BoxBufferGeometry( width, height, depth, widthSegments, heightSegments,
 
 BoxBufferGeometry.prototype = Object.create( BufferGeometry.prototype );
 BoxBufferGeometry.prototype.constructor = BoxBufferGeometry;
+
+/**
+ * @author alteredq / http://alteredqualia.com/
+ *
+ * parameters = {
+ *  color: <hex>,
+ *  opacity: <float>,
+ *  map: new THREE.Texture( <Image> ),
+ *
+ *	uvOffset: new THREE.Vector2(),
+ *	uvScale: new THREE.Vector2()
+ * }
+ */
+
+function SpriteMaterial( parameters ) {
+
+	Material.call( this );
+
+	this.type = 'SpriteMaterial';
+
+	this.color = new Color( 0xffffff );
+	this.map = null;
+
+	this.rotation = 0;
+
+	this.fog = false;
+	this.lights = false;
+
+	this.setValues( parameters );
+
+}
+
+SpriteMaterial.prototype = Object.create( Material.prototype );
+SpriteMaterial.prototype.constructor = SpriteMaterial;
+
+SpriteMaterial.prototype.copy = function ( source ) {
+
+	Material.prototype.copy.call( this, source );
+
+	this.color.copy( source.color );
+	this.map = source.map;
+
+	this.rotation = source.rotation;
+
+	return this;
+
+};
 
 /**
  * @author mrdoob / http://mrdoob.com/
@@ -28953,4 +28894,4 @@ function AxisHelper( size ) {
 AxisHelper.prototype = Object.create( LineSegments.prototype );
 AxisHelper.prototype.constructor = AxisHelper;
 
-export { WebGLRenderTarget, WebGLRenderer, ShaderLib, UniformsLib, UniformsUtils, ShaderChunk, Scene, Sprite, Mesh, Points, Group, Texture, TextureLoader, DefaultLoadingManager, LoadingManager, ImageLoader, FileLoader, Loader, Cache, DirectionalLight, AmbientLight, Light, PerspectiveCamera, Camera, VectorKeyframeTrack, StringKeyframeTrack, QuaternionKeyframeTrack, NumberKeyframeTrack, ColorKeyframeTrack, BooleanKeyframeTrack, PropertyMixer, PropertyBinding, KeyframeTrack, AnimationUtils, AnimationObjectGroup, AnimationMixer, AnimationClip, Uniform, InstancedBufferGeometry, BufferGeometry, GeometryIdCount, Geometry, InterleavedBufferAttribute, InstancedInterleavedBuffer, InterleavedBuffer, InstancedBufferAttribute, Face3, Object3D, Raycaster, Layers, EventDispatcher, Clock, QuaternionLinearInterpolant, LinearInterpolant, DiscreteInterpolant, CubicInterpolant, Interpolant, Triangle, _Math as Math, Spherical, Cylindrical, Plane, Frustum, Sphere, Ray, Matrix4, Matrix3, Box3, Box2, Line3, Euler, Vector4, Vector3, Vector2, Quaternion, Color, BoxHelper, ArrowHelper, AxisHelper, WireframeGeometry, IcosahedronGeometry, IcosahedronBufferGeometry, SphereGeometry, SphereBufferGeometry, PlaneGeometry, PlaneBufferGeometry, CylinderGeometry, CylinderBufferGeometry, BoxGeometry, BoxBufferGeometry, SpriteMaterial, RawShaderMaterial, ShaderMaterial, PointsMaterial, MeshBasicMaterial, Material, Float64BufferAttribute, Float32BufferAttribute, Uint32BufferAttribute, Int32BufferAttribute, Uint16BufferAttribute, Int16BufferAttribute, Uint8ClampedBufferAttribute, Uint8BufferAttribute, Int8BufferAttribute, BufferAttribute, REVISION, MOUSE, CullFaceNone, CullFaceBack, CullFaceFront, CullFaceFrontBack, FrontFaceDirectionCW, FrontFaceDirectionCCW, BasicShadowMap, PCFShadowMap, PCFSoftShadowMap, FrontSide, BackSide, DoubleSide, FlatShading, SmoothShading, NoColors, FaceColors, VertexColors, NoBlending, NormalBlending, AdditiveBlending, SubtractiveBlending, MultiplyBlending, CustomBlending, AddEquation, SubtractEquation, ReverseSubtractEquation, MinEquation, MaxEquation, ZeroFactor, OneFactor, SrcColorFactor, OneMinusSrcColorFactor, SrcAlphaFactor, OneMinusSrcAlphaFactor, DstAlphaFactor, OneMinusDstAlphaFactor, DstColorFactor, OneMinusDstColorFactor, SrcAlphaSaturateFactor, NeverDepth, AlwaysDepth, LessDepth, LessEqualDepth, EqualDepth, GreaterEqualDepth, GreaterDepth, NotEqualDepth, MultiplyOperation, MixOperation, AddOperation, NoToneMapping, LinearToneMapping, ReinhardToneMapping, Uncharted2ToneMapping, CineonToneMapping, UVMapping, CubeReflectionMapping, CubeRefractionMapping, EquirectangularReflectionMapping, EquirectangularRefractionMapping, SphericalReflectionMapping, CubeUVReflectionMapping, CubeUVRefractionMapping, RepeatWrapping, ClampToEdgeWrapping, MirroredRepeatWrapping, NearestFilter, NearestMipMapNearestFilter, NearestMipMapLinearFilter, LinearFilter, LinearMipMapNearestFilter, LinearMipMapLinearFilter, UnsignedByteType, ByteType, ShortType, UnsignedShortType, IntType, UnsignedIntType, FloatType, HalfFloatType, UnsignedShort4444Type, UnsignedShort5551Type, UnsignedShort565Type, UnsignedInt248Type, AlphaFormat, RGBFormat, RGBAFormat, LuminanceFormat, LuminanceAlphaFormat, RGBEFormat, DepthFormat, DepthStencilFormat, RGB_S3TC_DXT1_Format, RGBA_S3TC_DXT1_Format, RGBA_S3TC_DXT3_Format, RGBA_S3TC_DXT5_Format, RGB_PVRTC_4BPPV1_Format, RGB_PVRTC_2BPPV1_Format, RGBA_PVRTC_4BPPV1_Format, RGBA_PVRTC_2BPPV1_Format, RGB_ETC1_Format, LoopOnce, LoopRepeat, LoopPingPong, InterpolateDiscrete, InterpolateLinear, InterpolateSmooth, ZeroCurvatureEnding, ZeroSlopeEnding, WrapAroundEnding, TrianglesDrawMode, TriangleStripDrawMode, TriangleFanDrawMode, LinearEncoding, sRGBEncoding, GammaEncoding, RGBEEncoding, LogLuvEncoding, RGBM7Encoding, RGBM16Encoding, RGBDEncoding, BasicDepthPacking, RGBADepthPacking };
+export { WebGLRenderTarget, WebGLRenderer, ShaderLib, UniformsLib, UniformsUtils, ShaderChunk, Scene, Mesh, Points, Group, Texture, TextureLoader, DefaultLoadingManager, LoadingManager, ImageLoader, FileLoader, Loader, Cache, DirectionalLight, AmbientLight, Light, PerspectiveCamera, Camera, VectorKeyframeTrack, StringKeyframeTrack, QuaternionKeyframeTrack, NumberKeyframeTrack, ColorKeyframeTrack, BooleanKeyframeTrack, PropertyMixer, PropertyBinding, KeyframeTrack, AnimationUtils, AnimationObjectGroup, AnimationMixer, AnimationClip, Uniform, InstancedBufferGeometry, BufferGeometry, GeometryIdCount, Geometry, InterleavedBufferAttribute, InstancedInterleavedBuffer, InterleavedBuffer, InstancedBufferAttribute, Face3, Object3D, Raycaster, Layers, EventDispatcher, Clock, QuaternionLinearInterpolant, LinearInterpolant, DiscreteInterpolant, CubicInterpolant, Interpolant, Triangle, _Math as Math, Spherical, Cylindrical, Plane, Frustum, Sphere, Ray, Matrix4, Matrix3, Box3, Box2, Line3, Euler, Vector4, Vector3, Vector2, Quaternion, Color, BoxHelper, ArrowHelper, AxisHelper, WireframeGeometry, IcosahedronGeometry, IcosahedronBufferGeometry, SphereGeometry, SphereBufferGeometry, PlaneGeometry, PlaneBufferGeometry, CylinderGeometry, CylinderBufferGeometry, BoxGeometry, BoxBufferGeometry, SpriteMaterial, RawShaderMaterial, ShaderMaterial, PointsMaterial, MeshBasicMaterial, Material, Float64BufferAttribute, Float32BufferAttribute, Uint32BufferAttribute, Int32BufferAttribute, Uint16BufferAttribute, Int16BufferAttribute, Uint8ClampedBufferAttribute, Uint8BufferAttribute, Int8BufferAttribute, BufferAttribute, REVISION, MOUSE, CullFaceNone, CullFaceBack, CullFaceFront, CullFaceFrontBack, FrontFaceDirectionCW, FrontFaceDirectionCCW, BasicShadowMap, PCFShadowMap, PCFSoftShadowMap, FrontSide, BackSide, DoubleSide, FlatShading, SmoothShading, NoColors, FaceColors, VertexColors, NoBlending, NormalBlending, AdditiveBlending, SubtractiveBlending, MultiplyBlending, CustomBlending, AddEquation, SubtractEquation, ReverseSubtractEquation, MinEquation, MaxEquation, ZeroFactor, OneFactor, SrcColorFactor, OneMinusSrcColorFactor, SrcAlphaFactor, OneMinusSrcAlphaFactor, DstAlphaFactor, OneMinusDstAlphaFactor, DstColorFactor, OneMinusDstColorFactor, SrcAlphaSaturateFactor, NeverDepth, AlwaysDepth, LessDepth, LessEqualDepth, EqualDepth, GreaterEqualDepth, GreaterDepth, NotEqualDepth, MultiplyOperation, MixOperation, AddOperation, NoToneMapping, LinearToneMapping, ReinhardToneMapping, Uncharted2ToneMapping, CineonToneMapping, UVMapping, CubeReflectionMapping, CubeRefractionMapping, EquirectangularReflectionMapping, EquirectangularRefractionMapping, SphericalReflectionMapping, CubeUVReflectionMapping, CubeUVRefractionMapping, RepeatWrapping, ClampToEdgeWrapping, MirroredRepeatWrapping, NearestFilter, NearestMipMapNearestFilter, NearestMipMapLinearFilter, LinearFilter, LinearMipMapNearestFilter, LinearMipMapLinearFilter, UnsignedByteType, ByteType, ShortType, UnsignedShortType, IntType, UnsignedIntType, FloatType, HalfFloatType, UnsignedShort4444Type, UnsignedShort5551Type, UnsignedShort565Type, UnsignedInt248Type, AlphaFormat, RGBFormat, RGBAFormat, LuminanceFormat, LuminanceAlphaFormat, RGBEFormat, DepthFormat, DepthStencilFormat, RGB_S3TC_DXT1_Format, RGBA_S3TC_DXT1_Format, RGBA_S3TC_DXT3_Format, RGBA_S3TC_DXT5_Format, RGB_PVRTC_4BPPV1_Format, RGB_PVRTC_2BPPV1_Format, RGBA_PVRTC_4BPPV1_Format, RGBA_PVRTC_2BPPV1_Format, RGB_ETC1_Format, LoopOnce, LoopRepeat, LoopPingPong, InterpolateDiscrete, InterpolateLinear, InterpolateSmooth, ZeroCurvatureEnding, ZeroSlopeEnding, WrapAroundEnding, TrianglesDrawMode, TriangleStripDrawMode, TriangleFanDrawMode, LinearEncoding, sRGBEncoding, GammaEncoding, RGBEEncoding, LogLuvEncoding, RGBM7Encoding, RGBM16Encoding, RGBDEncoding, BasicDepthPacking, RGBADepthPacking };

@@ -11,7 +11,7 @@ export { ShaderChunk } from './renderers/shaders/ShaderChunk.js';
 // export { Fog } from './scenes/Fog.js';
 export { Scene } from './scenes/Scene.js';
 // export { LensFlare } from './objects/LensFlare.js';
-export { Sprite } from './objects/Sprite.js';
+// export { Sprite } from './objects/Sprite.js';
 // export { LOD } from './objects/LOD.js';
 // export { SkinnedMesh } from './objects/SkinnedMesh.js';
 // export { Skeleton } from './objects/Skeleton.js';
