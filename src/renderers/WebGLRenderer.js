@@ -4,7 +4,7 @@ import { WebGLUniforms } from './webgl/WebGLUniforms';
 import { UniformsUtils } from './shaders/UniformsUtils';
 import { ShaderLib } from './shaders/ShaderLib';
 // import { LensFlarePlugin } from './webgl/plugins/LensFlarePlugin';
-import { SpritePlugin } from './webgl/plugins/SpritePlugin';
+// import { SpritePlugin } from './webgl/plugins/SpritePlugin';
 // import { WebGLShadowMap } from './webgl/WebGLShadowMap';
 import { ShaderMaterial } from '../materials/ShaderMaterial';
 import { Mesh } from '../objects/Mesh';
@@ -348,7 +348,7 @@ function WebGLRenderer( parameters ) {
 
 	// Plugins
 
-	var spritePlugin = new SpritePlugin( this, sprites );
+	// var spritePlugin = new SpritePlugin( this, sprites );
 	// var lensFlarePlugin = new LensFlarePlugin( this, lensFlares );
 
 	// API
@@ -1246,7 +1246,7 @@ function WebGLRenderer( parameters ) {
 
 		// custom render plugins (post pass)
 
-		spritePlugin.render( scene, camera );
+		// spritePlugin.render( scene, camera );
 		// lensFlarePlugin.render( scene, camera, _currentViewport );
 
 		// Generate mipmap if we're using any kind of mipmap filtering
