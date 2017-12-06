@@ -9,75 +9,75 @@ import { NoToneMapping, AddOperation, MixOperation, MultiplyOperation, Equirecta
 
 var programIdCount = 0;
 
-function getEncodingComponents( encoding ) {
+// function getEncodingComponents( encoding ) {
 
-	switch ( encoding ) {
+// 	switch ( encoding ) {
 
-		case LinearEncoding:
-			return [ 'Linear','( value )' ];
-		case sRGBEncoding:
-			return [ 'sRGB','( value )' ];
-		case RGBEEncoding:
-			return [ 'RGBE','( value )' ];
-		case RGBM7Encoding:
-			return [ 'RGBM','( value, 7.0 )' ];
-		case RGBM16Encoding:
-			return [ 'RGBM','( value, 16.0 )' ];
-		case RGBDEncoding:
-			return [ 'RGBD','( value, 256.0 )' ];
-		case GammaEncoding:
-			return [ 'Gamma','( value, float( GAMMA_FACTOR ) )' ];
-		default:
-			throw new Error( 'unsupported encoding: ' + encoding );
+// 		case LinearEncoding:
+// 			return [ 'Linear','( value )' ];
+// 		case sRGBEncoding:
+// 			return [ 'sRGB','( value )' ];
+// 		case RGBEEncoding:
+// 			return [ 'RGBE','( value )' ];
+// 		case RGBM7Encoding:
+// 			return [ 'RGBM','( value, 7.0 )' ];
+// 		case RGBM16Encoding:
+// 			return [ 'RGBM','( value, 16.0 )' ];
+// 		case RGBDEncoding:
+// 			return [ 'RGBD','( value, 256.0 )' ];
+// 		case GammaEncoding:
+// 			return [ 'Gamma','( value, float( GAMMA_FACTOR ) )' ];
+// 		default:
+// 			throw new Error( 'unsupported encoding: ' + encoding );
 
-	}
+// 	}
 
-}
+// }
 
-function getTexelDecodingFunction( functionName, encoding ) {
+// function getTexelDecodingFunction( functionName, encoding ) {
 
-	var components = getEncodingComponents( encoding );
-	return "vec4 " + functionName + "( vec4 value ) { return " + components[ 0 ] + "ToLinear" + components[ 1 ] + "; }";
+// 	var components = getEncodingComponents( encoding );
+// 	return "vec4 " + functionName + "( vec4 value ) { return " + components[ 0 ] + "ToLinear" + components[ 1 ] + "; }";
 
-}
+// }
 
-function getTexelEncodingFunction( functionName, encoding ) {
+// function getTexelEncodingFunction( functionName, encoding ) {
 
-	var components = getEncodingComponents( encoding );
-	return "vec4 " + functionName + "( vec4 value ) { return LinearTo" + components[ 0 ] + components[ 1 ] + "; }";
+// 	var components = getEncodingComponents( encoding );
+// 	return "vec4 " + functionName + "( vec4 value ) { return LinearTo" + components[ 0 ] + components[ 1 ] + "; }";
 
-}
+// }
 
-function getToneMappingFunction( functionName, toneMapping ) {
+// function getToneMappingFunction( functionName, toneMapping ) {
 
-	var toneMappingName;
+// 	var toneMappingName;
 
-	switch ( toneMapping ) {
+// 	switch ( toneMapping ) {
 
-		case LinearToneMapping:
-			toneMappingName = "Linear";
-			break;
+// 		case LinearToneMapping:
+// 			toneMappingName = "Linear";
+// 			break;
 
-		case ReinhardToneMapping:
-			toneMappingName = "Reinhard";
-			break;
+// 		case ReinhardToneMapping:
+// 			toneMappingName = "Reinhard";
+// 			break;
 
-		case Uncharted2ToneMapping:
-			toneMappingName = "Uncharted2";
-			break;
+// 		case Uncharted2ToneMapping:
+// 			toneMappingName = "Uncharted2";
+// 			break;
 
-		case CineonToneMapping:
-			toneMappingName = "OptimizedCineon";
-			break;
+// 		case CineonToneMapping:
+// 			toneMappingName = "OptimizedCineon";
+// 			break;
 
-		default:
-			throw new Error( 'unsupported toneMapping: ' + toneMapping );
+// 		default:
+// 			throw new Error( 'unsupported toneMapping: ' + toneMapping );
 
-	}
+// 	}
 
-	return "vec3 " + functionName + "( vec3 color ) { return " + toneMappingName + "ToneMapping( color ); }";
+// 	return "vec3 " + functionName + "( vec3 color ) { return " + toneMappingName + "ToneMapping( color ); }";
 
-}
+// }
 
 function generateExtensions( extensions, parameters, rendererExtensions ) {
 
@@ -204,73 +204,73 @@ function WebGLProgram( renderer, code, material, parameters ) {
 	var vertexShader = material.__webglShader.vertexShader;
 	var fragmentShader = material.__webglShader.fragmentShader;
 
-	var shadowMapTypeDefine = 'SHADOWMAP_TYPE_BASIC';
+	// var shadowMapTypeDefine = 'SHADOWMAP_TYPE_BASIC';
 
-	if ( parameters.shadowMapType === PCFShadowMap ) {
+	// if ( parameters.shadowMapType === PCFShadowMap ) {
 
-		shadowMapTypeDefine = 'SHADOWMAP_TYPE_PCF';
+	// 	shadowMapTypeDefine = 'SHADOWMAP_TYPE_PCF';
 
-	} else if ( parameters.shadowMapType === PCFSoftShadowMap ) {
+	// } else if ( parameters.shadowMapType === PCFSoftShadowMap ) {
 
-		shadowMapTypeDefine = 'SHADOWMAP_TYPE_PCF_SOFT';
+	// 	shadowMapTypeDefine = 'SHADOWMAP_TYPE_PCF_SOFT';
 
-	}
+	// }
 
-	var envMapTypeDefine = 'ENVMAP_TYPE_CUBE';
-	var envMapModeDefine = 'ENVMAP_MODE_REFLECTION';
-	var envMapBlendingDefine = 'ENVMAP_BLENDING_MULTIPLY';
+	// var envMapTypeDefine = 'ENVMAP_TYPE_CUBE';
+	// var envMapModeDefine = 'ENVMAP_MODE_REFLECTION';
+	// var envMapBlendingDefine = 'ENVMAP_BLENDING_MULTIPLY';
 
-	if ( parameters.envMap ) {
+	// if ( parameters.envMap ) {
 
-		switch ( material.envMap.mapping ) {
+	// 	switch ( material.envMap.mapping ) {
 
-			case CubeReflectionMapping:
-			case CubeRefractionMapping:
-				envMapTypeDefine = 'ENVMAP_TYPE_CUBE';
-				break;
+	// 		case CubeReflectionMapping:
+	// 		case CubeRefractionMapping:
+	// 			envMapTypeDefine = 'ENVMAP_TYPE_CUBE';
+	// 			break;
 
-			case CubeUVReflectionMapping:
-			case CubeUVRefractionMapping:
-				envMapTypeDefine = 'ENVMAP_TYPE_CUBE_UV';
-				break;
+	// 		case CubeUVReflectionMapping:
+	// 		case CubeUVRefractionMapping:
+	// 			envMapTypeDefine = 'ENVMAP_TYPE_CUBE_UV';
+	// 			break;
 
-			case EquirectangularReflectionMapping:
-			case EquirectangularRefractionMapping:
-				envMapTypeDefine = 'ENVMAP_TYPE_EQUIREC';
-				break;
+	// 		case EquirectangularReflectionMapping:
+	// 		case EquirectangularRefractionMapping:
+	// 			envMapTypeDefine = 'ENVMAP_TYPE_EQUIREC';
+	// 			break;
 
-			case SphericalReflectionMapping:
-				envMapTypeDefine = 'ENVMAP_TYPE_SPHERE';
-				break;
+	// 		case SphericalReflectionMapping:
+	// 			envMapTypeDefine = 'ENVMAP_TYPE_SPHERE';
+	// 			break;
 
-		}
+	// 	}
 
-		switch ( material.envMap.mapping ) {
+	// 	switch ( material.envMap.mapping ) {
 
-			case CubeRefractionMapping:
-			case EquirectangularRefractionMapping:
-				envMapModeDefine = 'ENVMAP_MODE_REFRACTION';
-				break;
+	// 		case CubeRefractionMapping:
+	// 		case EquirectangularRefractionMapping:
+	// 			envMapModeDefine = 'ENVMAP_MODE_REFRACTION';
+	// 			break;
 
-		}
+	// 	}
 
-		switch ( material.combine ) {
+	// 	switch ( material.combine ) {
 
-			case MultiplyOperation:
-				envMapBlendingDefine = 'ENVMAP_BLENDING_MULTIPLY';
-				break;
+	// 		case MultiplyOperation:
+	// 			envMapBlendingDefine = 'ENVMAP_BLENDING_MULTIPLY';
+	// 			break;
 
-			case MixOperation:
-				envMapBlendingDefine = 'ENVMAP_BLENDING_MIX';
-				break;
+	// 		case MixOperation:
+	// 			envMapBlendingDefine = 'ENVMAP_BLENDING_MIX';
+	// 			break;
 
-			case AddOperation:
-				envMapBlendingDefine = 'ENVMAP_BLENDING_ADD';
-				break;
+	// 		case AddOperation:
+	// 			envMapBlendingDefine = 'ENVMAP_BLENDING_ADD';
+	// 			break;
 
-		}
+	// 	}
 
-	}
+	// }
 
 	var gammaFactorDefine = ( renderer.gammaFactor > 0 ) ? renderer.gammaFactor : 1.0;
 
@@ -323,45 +323,45 @@ function WebGLProgram( renderer, code, material, parameters ) {
 
 			'#define GAMMA_FACTOR ' + gammaFactorDefine,
 
-			'#define MAX_BONES ' + parameters.maxBones,
-			( parameters.useFog && parameters.fog ) ? '#define USE_FOG' : '',
-			( parameters.useFog && parameters.fogExp ) ? '#define FOG_EXP2' : '',
+			// '#define MAX_BONES ' + parameters.maxBones,
+			// ( parameters.useFog && parameters.fog ) ? '#define USE_FOG' : '',
+			// ( parameters.useFog && parameters.fogExp ) ? '#define FOG_EXP2' : '',
 
 
 			parameters.map ? '#define USE_MAP' : '',
-			parameters.envMap ? '#define USE_ENVMAP' : '',
-			parameters.envMap ? '#define ' + envMapModeDefine : '',
-			parameters.lightMap ? '#define USE_LIGHTMAP' : '',
-			parameters.aoMap ? '#define USE_AOMAP' : '',
-			parameters.emissiveMap ? '#define USE_EMISSIVEMAP' : '',
-			parameters.bumpMap ? '#define USE_BUMPMAP' : '',
-			parameters.normalMap ? '#define USE_NORMALMAP' : '',
-			parameters.displacementMap && parameters.supportsVertexTextures ? '#define USE_DISPLACEMENTMAP' : '',
-			parameters.specularMap ? '#define USE_SPECULARMAP' : '',
-			parameters.roughnessMap ? '#define USE_ROUGHNESSMAP' : '',
-			parameters.metalnessMap ? '#define USE_METALNESSMAP' : '',
-			parameters.alphaMap ? '#define USE_ALPHAMAP' : '',
+			// parameters.envMap ? '#define USE_ENVMAP' : '',
+			// parameters.envMap ? '#define ' + envMapModeDefine : '',
+			// parameters.lightMap ? '#define USE_LIGHTMAP' : '',
+			// parameters.aoMap ? '#define USE_AOMAP' : '',
+			// parameters.emissiveMap ? '#define USE_EMISSIVEMAP' : '',
+			// parameters.bumpMap ? '#define USE_BUMPMAP' : '',
+			// parameters.normalMap ? '#define USE_NORMALMAP' : '',
+			// parameters.displacementMap && parameters.supportsVertexTextures ? '#define USE_DISPLACEMENTMAP' : '',
+			// parameters.specularMap ? '#define USE_SPECULARMAP' : '',
+			// parameters.roughnessMap ? '#define USE_ROUGHNESSMAP' : '',
+			// parameters.metalnessMap ? '#define USE_METALNESSMAP' : '',
+			// parameters.alphaMap ? '#define USE_ALPHAMAP' : '',
 			parameters.vertexColors ? '#define USE_COLOR' : '',
 
 			parameters.flatShading ? '#define FLAT_SHADED' : '',
 
-			parameters.skinning ? '#define USE_SKINNING' : '',
-			parameters.useVertexTexture ? '#define BONE_TEXTURE' : '',
+			// parameters.skinning ? '#define USE_SKINNING' : '',
+			// parameters.useVertexTexture ? '#define BONE_TEXTURE' : '',
 
-			parameters.morphTargets ? '#define USE_MORPHTARGETS' : '',
-			parameters.morphNormals && parameters.flatShading === false ? '#define USE_MORPHNORMALS' : '',
+			// parameters.morphTargets ? '#define USE_MORPHTARGETS' : '',
+			// parameters.morphNormals && parameters.flatShading === false ? '#define USE_MORPHNORMALS' : '',
 			parameters.doubleSided ? '#define DOUBLE_SIDED' : '',
 			parameters.flipSided ? '#define FLIP_SIDED' : '',
 
-			'#define NUM_CLIPPING_PLANES ' + parameters.numClippingPlanes,
+			// '#define NUM_CLIPPING_PLANES ' + parameters.numClippingPlanes,
 
-			parameters.shadowMapEnabled ? '#define USE_SHADOWMAP' : '',
-			parameters.shadowMapEnabled ? '#define ' + shadowMapTypeDefine : '',
+			// parameters.shadowMapEnabled ? '#define USE_SHADOWMAP' : '',
+			// parameters.shadowMapEnabled ? '#define ' + shadowMapTypeDefine : '',
 
 			parameters.sizeAttenuation ? '#define USE_SIZEATTENUATION' : '',
 
-			parameters.logarithmicDepthBuffer ? '#define USE_LOGDEPTHBUF' : '',
-			parameters.logarithmicDepthBuffer && renderer.extensions.get( 'EXT_frag_depth' ) ? '#define USE_LOGDEPTHBUF_EXT' : '',
+			// parameters.logarithmicDepthBuffer ? '#define USE_LOGDEPTHBUF' : '',
+			// parameters.logarithmicDepthBuffer && renderer.extensions.get( 'EXT_frag_depth' ) ? '#define USE_LOGDEPTHBUF_EXT' : '',
 
 			'uniform mat4 modelMatrix;',
 			'uniform mat4 modelViewMatrix;',
@@ -380,37 +380,37 @@ function WebGLProgram( renderer, code, material, parameters ) {
 
 			'#endif',
 
-			'#ifdef USE_MORPHTARGETS',
+			// '#ifdef USE_MORPHTARGETS',
 
-			'	attribute vec3 morphTarget0;',
-			'	attribute vec3 morphTarget1;',
-			'	attribute vec3 morphTarget2;',
-			'	attribute vec3 morphTarget3;',
+			// '	attribute vec3 morphTarget0;',
+			// '	attribute vec3 morphTarget1;',
+			// '	attribute vec3 morphTarget2;',
+			// '	attribute vec3 morphTarget3;',
 
-			'	#ifdef USE_MORPHNORMALS',
+			// '	#ifdef USE_MORPHNORMALS',
 
-			'		attribute vec3 morphNormal0;',
-			'		attribute vec3 morphNormal1;',
-			'		attribute vec3 morphNormal2;',
-			'		attribute vec3 morphNormal3;',
+			// '		attribute vec3 morphNormal0;',
+			// '		attribute vec3 morphNormal1;',
+			// '		attribute vec3 morphNormal2;',
+			// '		attribute vec3 morphNormal3;',
 
-			'	#else',
+			// '	#else',
 
-			'		attribute vec3 morphTarget4;',
-			'		attribute vec3 morphTarget5;',
-			'		attribute vec3 morphTarget6;',
-			'		attribute vec3 morphTarget7;',
+			// '		attribute vec3 morphTarget4;',
+			// '		attribute vec3 morphTarget5;',
+			// '		attribute vec3 morphTarget6;',
+			// '		attribute vec3 morphTarget7;',
 
-			'	#endif',
+			// '	#endif',
 
-			'#endif',
+			// '#endif',
 
-			'#ifdef USE_SKINNING',
+			// '#ifdef USE_SKINNING',
 
-			'	attribute vec4 skinIndex;',
-			'	attribute vec4 skinWeight;',
+			// '	attribute vec4 skinIndex;',
+			// '	attribute vec4 skinWeight;',
 
-			'#endif',
+			// '#endif',
 
 			'\n'
 
@@ -450,7 +450,7 @@ function WebGLProgram( renderer, code, material, parameters ) {
 			// parameters.alphaMap ? '#define USE_ALPHAMAP' : '',
 			// parameters.vertexColors ? '#define USE_COLOR' : '',
 
-			parameters.gradientMap ? '#define USE_GRADIENTMAP' : '',
+			// parameters.gradientMap ? '#define USE_GRADIENTMAP' : '',
 
 			parameters.flatShading ? '#define FLAT_SHADED' : '',
 
@@ -470,7 +470,7 @@ function WebGLProgram( renderer, code, material, parameters ) {
 			// parameters.logarithmicDepthBuffer ? '#define USE_LOGDEPTHBUF' : '',
 			// parameters.logarithmicDepthBuffer && renderer.extensions.get( 'EXT_frag_depth' ) ? '#define USE_LOGDEPTHBUF_EXT' : '',
 
-			parameters.envMap && renderer.extensions.get( 'EXT_shader_texture_lod' ) ? '#define TEXTURE_LOD_EXT' : '',
+			// parameters.envMap && renderer.extensions.get( 'EXT_shader_texture_lod' ) ? '#define TEXTURE_LOD_EXT' : '',
 
 			'uniform mat4 viewMatrix;',
 			'uniform vec3 cameraPosition;',

@@ -35,13 +35,13 @@ import defaultnormal_vertex from './ShaderChunk/defaultnormal_vertex.glsl';
 // import gradientmap_pars_fragment from './ShaderChunk/gradientmap_pars_fragment.glsl';
 // import lightmap_fragment from './ShaderChunk/lightmap_fragment.glsl';
 // import lightmap_pars_fragment from './ShaderChunk/lightmap_pars_fragment.glsl';
-import lights_lambert_vertex from './ShaderChunk/lights_lambert_vertex.glsl';
-import lights_pars from './ShaderChunk/lights_pars.glsl';
-import lights_phong_fragment from './ShaderChunk/lights_phong_fragment.glsl';
-import lights_phong_pars_fragment from './ShaderChunk/lights_phong_pars_fragment.glsl';
+// import lights_lambert_vertex from './ShaderChunk/lights_lambert_vertex.glsl';
+// import lights_pars from './ShaderChunk/lights_pars.glsl';
+// import lights_phong_fragment from './ShaderChunk/lights_phong_fragment.glsl';
+// import lights_phong_pars_fragment from './ShaderChunk/lights_phong_pars_fragment.glsl';
 // import lights_physical_fragment from './ShaderChunk/lights_physical_fragment.glsl';
 // import lights_physical_pars_fragment from './ShaderChunk/lights_physical_pars_fragment.glsl';
-import lights_template from './ShaderChunk/lights_template.glsl';
+// import lights_template from './ShaderChunk/lights_template.glsl';
 // import logdepthbuf_fragment from './ShaderChunk/logdepthbuf_fragment.glsl';
 // import logdepthbuf_pars_fragment from './ShaderChunk/logdepthbuf_pars_fragment.glsl';
 // import logdepthbuf_pars_vertex from './ShaderChunk/logdepthbuf_pars_vertex.glsl';
@@ -58,7 +58,7 @@ import map_particle_pars_fragment from './ShaderChunk/map_particle_pars_fragment
 import normal_flip from './ShaderChunk/normal_flip.glsl';
 import normal_fragment from './ShaderChunk/normal_fragment.glsl';
 // import normalmap_pars_fragment from './ShaderChunk/normalmap_pars_fragment.glsl';
-import packing from './ShaderChunk/packing.glsl';
+// import packing from './ShaderChunk/packing.glsl';
 import premultiplied_alpha_fragment from './ShaderChunk/premultiplied_alpha_fragment.glsl';
 import project_vertex from './ShaderChunk/project_vertex.glsl';
 // import roughnessmap_fragment from './ShaderChunk/roughnessmap_fragment.glsl';
@@ -87,18 +87,18 @@ import worldpos_vertex from './ShaderChunk/worldpos_vertex.glsl';
 // import cube_vert from './ShaderLib/cube_vert.glsl';
 // import depth_frag from './ShaderLib/depth_frag.glsl';
 // import depth_vert from './ShaderLib/depth_vert.glsl';
-import distanceRGBA_frag from './ShaderLib/distanceRGBA_frag.glsl';
-import distanceRGBA_vert from './ShaderLib/distanceRGBA_vert.glsl';
+// import distanceRGBA_frag from './ShaderLib/distanceRGBA_frag.glsl';
+// import distanceRGBA_vert from './ShaderLib/distanceRGBA_vert.glsl';
 // import equirect_frag from './ShaderLib/equirect_frag.glsl';
 // import equirect_vert from './ShaderLib/equirect_vert.glsl';
 // import linedashed_frag from './ShaderLib/linedashed_frag.glsl';
 // import linedashed_vert from './ShaderLib/linedashed_vert.glsl';
 import meshbasic_frag from './ShaderLib/meshbasic_frag.glsl';
 import meshbasic_vert from './ShaderLib/meshbasic_vert.glsl';
-import meshlambert_frag from './ShaderLib/meshlambert_frag.glsl';
-import meshlambert_vert from './ShaderLib/meshlambert_vert.glsl';
-import meshphong_frag from './ShaderLib/meshphong_frag.glsl';
-import meshphong_vert from './ShaderLib/meshphong_vert.glsl';
+// import meshlambert_frag from './ShaderLib/meshlambert_frag.glsl';
+// import meshlambert_vert from './ShaderLib/meshlambert_vert.glsl';
+// import meshphong_frag from './ShaderLib/meshphong_frag.glsl';
+// import meshphong_vert from './ShaderLib/meshphong_vert.glsl';
 // import meshphysical_frag from './ShaderLib/meshphysical_frag.glsl';
 // import meshphysical_vert from './ShaderLib/meshphysical_vert.glsl';
 // import normal_frag from './ShaderLib/normal_frag.glsl';
@@ -116,7 +116,7 @@ export var ShaderChunk = {
 	// aomap_pars_fragment: aomap_pars_fragment,
 	begin_vertex: begin_vertex,
 	beginnormal_vertex: beginnormal_vertex,
-	bsdfs: bsdfs,
+	// bsdfs: bsdfs,
 	// bumpmap_pars_fragment: bumpmap_pars_fragment,
 	// clipping_planes_fragment: clipping_planes_fragment,
 	// clipping_planes_pars_fragment: clipping_planes_pars_fragment,
@@ -146,13 +146,13 @@ export var ShaderChunk = {
 	// gradientmap_pars_fragment: gradientmap_pars_fragment,
 	// lightmap_fragment: lightmap_fragment,
 	// lightmap_pars_fragment: lightmap_pars_fragment,
-	lights_lambert_vertex: lights_lambert_vertex,
-	lights_pars: lights_pars,
-	lights_phong_fragment: lights_phong_fragment,
-	lights_phong_pars_fragment: lights_phong_pars_fragment,
+	// lights_lambert_vertex: lights_lambert_vertex,
+	// lights_pars: lights_pars,
+	// lights_phong_fragment: lights_phong_fragment,
+	// lights_phong_pars_fragment: lights_phong_pars_fragment,
 	// lights_physical_fragment: lights_physical_fragment,
 	// lights_physical_pars_fragment: lights_physical_pars_fragment,
-	lights_template: lights_template,
+	// lights_template: lights_template,
 	// logdepthbuf_fragment: logdepthbuf_fragment,
 	// logdepthbuf_pars_fragment: logdepthbuf_pars_fragment,
 	// logdepthbuf_pars_vertex: logdepthbuf_pars_vertex,
@@ -169,7 +169,7 @@ export var ShaderChunk = {
 	normal_flip: normal_flip,
 	normal_fragment: normal_fragment,
 	// normalmap_pars_fragment: normalmap_pars_fragment,
-	packing: packing,
+	// packing: packing,
 	premultiplied_alpha_fragment: premultiplied_alpha_fragment,
 	project_vertex: project_vertex,
 	// roughnessmap_fragment: roughnessmap_fragment,
@@ -198,18 +198,18 @@ export var ShaderChunk = {
 	// cube_vert: cube_vert,
 	// depth_frag: depth_frag,
 	// depth_vert: depth_vert,
-	distanceRGBA_frag: distanceRGBA_frag,
-	distanceRGBA_vert: distanceRGBA_vert,
+	// distanceRGBA_frag: distanceRGBA_frag,
+	// distanceRGBA_vert: distanceRGBA_vert,
 	// equirect_frag: equirect_frag,
 	// equirect_vert: equirect_vert,
 	// linedashed_frag: linedashed_frag,
 	// linedashed_vert: linedashed_vert,
 	meshbasic_frag: meshbasic_frag,
 	meshbasic_vert: meshbasic_vert,
-	meshlambert_frag: meshlambert_frag,
-	meshlambert_vert: meshlambert_vert,
-	meshphong_frag: meshphong_frag,
-	meshphong_vert: meshphong_vert,
+	// meshlambert_frag: meshlambert_frag,
+	// meshlambert_vert: meshlambert_vert,
+	// meshphong_frag: meshphong_frag,
+	// meshphong_vert: meshphong_vert,
 	// meshphysical_frag: meshphysical_frag,
 	// meshphysical_vert: meshphysical_vert,
 	// normal_frag: normal_frag,

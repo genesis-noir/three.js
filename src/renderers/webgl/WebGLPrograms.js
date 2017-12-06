@@ -135,13 +135,13 @@ function WebGLPrograms( renderer, capabilities ) {
 
 			precision: precision,
 			supportsVertexTextures: capabilities.vertexTextures,
-			outputEncoding: getTextureEncodingFromMap( ( ! currentRenderTarget ) ? null : currentRenderTarget.texture, renderer.gammaOutput ),
+			// outputEncoding: getTextureEncodingFromMap( ( ! currentRenderTarget ) ? null : currentRenderTarget.texture, renderer.gammaOutput ),
 			map: !! material.map,
-			mapEncoding: getTextureEncodingFromMap( material.map, renderer.gammaInput ),
-			envMap: !! material.envMap,
-			envMapMode: material.envMap && material.envMap.mapping,
-			envMapEncoding: getTextureEncodingFromMap( material.envMap, renderer.gammaInput ),
-			envMapCubeUV: ( !! material.envMap ) && ( ( material.envMap.mapping === CubeUVReflectionMapping ) || ( material.envMap.mapping === CubeUVRefractionMapping ) ),
+			// mapEncoding: getTextureEncodingFromMap( material.map, renderer.gammaInput ),
+			// envMap: !! material.envMap,
+			// envMapMode: material.envMap && material.envMap.mapping,
+			// envMapEncoding: getTextureEncodingFromMap( material.envMap, renderer.gammaInput ),
+			// envMapCubeUV: ( !! material.envMap ) && ( ( material.envMap.mapping === CubeUVReflectionMapping ) || ( material.envMap.mapping === CubeUVRefractionMapping ) ),
 			// lightMap: !! material.lightMap,
 			// aoMap: !! material.aoMap,
 			// emissiveMap: !! material.emissiveMap,
@@ -152,7 +152,7 @@ function WebGLPrograms( renderer, capabilities ) {
 			// roughnessMap: !! material.roughnessMap,
 			// metalnessMap: !! material.metalnessMap,
 			// specularMap: !! material.specularMap,
-			alphaMap: !! material.alphaMap,
+			// alphaMap: !! material.alphaMap,
 
 			// gradientMap: !! material.gradientMap,
 
@@ -160,18 +160,18 @@ function WebGLPrograms( renderer, capabilities ) {
 
 			vertexColors: material.vertexColors,
 
-			fog: !! fog,
-			useFog: material.fog,
-			fogExp: (fog && fog.isFogExp2),
+			// fog: !! fog,
+			// useFog: material.fog,
+			// fogExp: (fog && fog.isFogExp2),
 
 			flatShading: material.shading === FlatShading,
 
 			sizeAttenuation: material.sizeAttenuation,
-			logarithmicDepthBuffer: capabilities.logarithmicDepthBuffer,
+			// logarithmicDepthBuffer: capabilities.logarithmicDepthBuffer,
 
 			// skinning: material.skinning,
 			// maxBones: maxBones,
-			useVertexTexture: capabilities.floatVertexTextures && object && object.skeleton && object.skeleton.useVertexTexture,
+			// useVertexTexture: capabilities.floatVertexTextures && object && object.skeleton && object.skeleton.useVertexTexture,
 
 			// morphTargets: material.morphTargets,
 			// morphNormals: material.morphNormals,
@@ -184,14 +184,14 @@ function WebGLPrograms( renderer, capabilities ) {
 			numRectAreaLights: lights.rectArea.length,
 			numHemiLights: lights.hemi.length,
 
-			numClippingPlanes: nClipPlanes,
-			numClipIntersection: nClipIntersection,
+			// numClippingPlanes: nClipPlanes,
+			// numClipIntersection: nClipIntersection,
 
 			// shadowMapEnabled: renderer.shadowMap.enabled && object.receiveShadow && lights.shadows.length > 0,
 			// shadowMapType: renderer.shadowMap.type,
 
-			toneMapping: renderer.toneMapping,
-			physicallyCorrectLights: renderer.physicallyCorrectLights,
+			// toneMapping: renderer.toneMapping,
+			// physicallyCorrectLights: renderer.physicallyCorrectLights,
 
 			premultipliedAlpha: material.premultipliedAlpha,
 
@@ -199,7 +199,7 @@ function WebGLPrograms( renderer, capabilities ) {
 			doubleSided: material.side === DoubleSide,
 			flipSided: material.side === BackSide,
 
-			depthPacking: ( material.depthPacking !== undefined ) ? material.depthPacking : false
+			// depthPacking: ( material.depthPacking !== undefined ) ? material.depthPacking : false
 
 		};
 

@@ -18,7 +18,7 @@ var ShaderLib = {
 			UniformsLib.common,
 			// UniformsLib.aomap,
 			// UniformsLib.lightmap,
-			UniformsLib.fog
+			// UniformsLib.fog
 		] ),
 
 		vertexShader: ShaderChunk.meshbasic_vert,
@@ -26,24 +26,24 @@ var ShaderLib = {
 
 	},
 
-	lambert: {
+	// lambert: {
 
-		uniforms: UniformsUtils.merge( [
-			UniformsLib.common,
-			// UniformsLib.aomap,
-			// UniformsLib.lightmap,
-			// UniformsLib.emissivemap,
-			UniformsLib.fog,
-			UniformsLib.lights,
-			{
-				emissive: { value: new Color( 0x000000 ) }
-			}
-		] ),
+	// 	uniforms: UniformsUtils.merge( [
+	// 		UniformsLib.common,
+	// 		// UniformsLib.aomap,
+	// 		// UniformsLib.lightmap,
+	// 		// UniformsLib.emissivemap,
+	// 		// UniformsLib.fog,
+	// 		UniformsLib.lights,
+	// 		{
+	// 			emissive: { value: new Color( 0x000000 ) }
+	// 		}
+	// 	] ),
 
-		vertexShader: ShaderChunk.meshlambert_vert,
-		fragmentShader: ShaderChunk.meshlambert_frag
+	// 	vertexShader: ShaderChunk.meshlambert_vert,
+	// 	fragmentShader: ShaderChunk.meshlambert_frag
 
-	},
+	// },
 
 	phong: {
 
@@ -56,7 +56,7 @@ var ShaderLib = {
 			// UniformsLib.normalmap,
 			// UniformsLib.displacementmap,
 			// UniformsLib.gradientmap,
-			UniformsLib.fog,
+			// UniformsLib.fog,
 			UniformsLib.lights,
 			{
 				emissive: { value: new Color( 0x000000 ) },
@@ -100,8 +100,8 @@ var ShaderLib = {
 	points: {
 
 		uniforms: UniformsUtils.merge( [
-			UniformsLib.points,
-			UniformsLib.fog
+			UniformsLib.points
+			// UniformsLib.fog
 		] ),
 
 		vertexShader: ShaderChunk.points_vert,
@@ -188,16 +188,16 @@ var ShaderLib = {
 
 	// },
 
-	distanceRGBA: {
+	// distanceRGBA: {
 
-		uniforms: {
-			lightPos: { value: new Vector3() }
-		},
+	// 	uniforms: {
+	// 		lightPos: { value: new Vector3() }
+	// 	},
 
-		vertexShader: ShaderChunk.distanceRGBA_vert,
-		fragmentShader: ShaderChunk.distanceRGBA_frag
+	// 	vertexShader: ShaderChunk.distanceRGBA_vert,
+	// 	fragmentShader: ShaderChunk.distanceRGBA_frag
 
-	}
+	// }
 
 };
 

@@ -87,14 +87,14 @@ var UniformsLib = {
 
 	// },
 
-	fog: {
+	// fog: {
 
-		fogDensity: { value: 0.00025 },
-		fogNear: { value: 1 },
-		fogFar: { value: 2000 },
-		fogColor: { value: new Color( 0xffffff ) }
+	// 	fogDensity: { value: 0.00025 },
+	// 	fogNear: { value: 1 },
+	// 	fogFar: { value: 2000 },
+	// 	fogColor: { value: new Color( 0xffffff ) }
 
-	},
+	// },
 
 	lights: {
 
