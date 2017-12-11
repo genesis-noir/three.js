@@ -348,7 +348,7 @@ function WebGLProgram( renderer, code, material, parameters ) {
 			// parameters.skinning ? '#define USE_SKINNING' : '',
 			// parameters.useVertexTexture ? '#define BONE_TEXTURE' : '',
 
-			// parameters.morphTargets ? '#define USE_MORPHTARGETS' : '',
+			parameters.morphTargets ? '#define USE_MORPHTARGETS' : '',
 			// parameters.morphNormals && parameters.flatShading === false ? '#define USE_MORPHNORMALS' : '',
 			parameters.doubleSided ? '#define DOUBLE_SIDED' : '',
 			parameters.flipSided ? '#define FLIP_SIDED' : '',
@@ -387,21 +387,21 @@ function WebGLProgram( renderer, code, material, parameters ) {
 			// '	attribute vec3 morphTarget2;',
 			// '	attribute vec3 morphTarget3;',
 
-			// '	#ifdef USE_MORPHNORMALS',
+			// // '	#ifdef USE_MORPHNORMALS',
 
-			// '		attribute vec3 morphNormal0;',
-			// '		attribute vec3 morphNormal1;',
-			// '		attribute vec3 morphNormal2;',
-			// '		attribute vec3 morphNormal3;',
+			// // '		attribute vec3 morphNormal0;',
+			// // '		attribute vec3 morphNormal1;',
+			// // '		attribute vec3 morphNormal2;',
+			// // '		attribute vec3 morphNormal3;',
 
-			// '	#else',
+			// // '	#else',
 
 			// '		attribute vec3 morphTarget4;',
 			// '		attribute vec3 morphTarget5;',
 			// '		attribute vec3 morphTarget6;',
 			// '		attribute vec3 morphTarget7;',
 
-			// '	#endif',
+			// // '	#endif',
 
 			// '#endif',
 

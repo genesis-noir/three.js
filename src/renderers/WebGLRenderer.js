@@ -689,64 +689,64 @@ function WebGLRenderer( parameters ) {
 
 		}
 
-		// // morph targets
+		// morph targets
 
-		// var morphTargetInfluences = object.morphTargetInfluences;
+		var morphTargetInfluences = object.morphTargetInfluences;
 
-		// if ( morphTargetInfluences !== undefined ) {
+		if ( morphTargetInfluences !== undefined ) {
 
-		// 	var activeInfluences = [];
+			var activeInfluences = [];
 
-		// 	for ( var i = 0, l = morphTargetInfluences.length; i < l; i ++ ) {
+			for ( var i = 0, l = morphTargetInfluences.length; i < l; i ++ ) {
 
-		// 		var influence = morphTargetInfluences[ i ];
-		// 		activeInfluences.push( [ influence, i ] );
+				var influence = morphTargetInfluences[ i ];
+				activeInfluences.push( [ influence, i ] );
 
-		// 	}
+			}
 
-		// 	activeInfluences.sort( absNumericalSort );
+			activeInfluences.sort( absNumericalSort );
 
-		// 	if ( activeInfluences.length > 8 ) {
+			if ( activeInfluences.length > 8 ) {
 
-		// 		activeInfluences.length = 8;
+				activeInfluences.length = 8;
 
-		// 	}
+			}
 
-		// 	var morphAttributes = geometry.morphAttributes;
+			var morphAttributes = geometry.morphAttributes;
 
-		// 	for ( var i = 0, l = activeInfluences.length; i < l; i ++ ) {
+			for ( var i = 0, l = activeInfluences.length; i < l; i ++ ) {
 
-		// 		var influence = activeInfluences[ i ];
-		// 		morphInfluences[ i ] = influence[ 0 ];
+				var influence = activeInfluences[ i ];
+				morphInfluences[ i ] = influence[ 0 ];
 
-		// 		if ( influence[ 0 ] !== 0 ) {
+				if ( influence[ 0 ] !== 0 ) {
 
-		// 			var index = influence[ 1 ];
+					var index = influence[ 1 ];
 
-		// 			if ( material.morphTargets === true && morphAttributes.position ) geometry.addAttribute( 'morphTarget' + i, morphAttributes.position[ index ] );
-		// 			if ( material.morphNormals === true && morphAttributes.normal ) geometry.addAttribute( 'morphNormal' + i, morphAttributes.normal[ index ] );
+					if ( material.morphTargets === true && morphAttributes.position ) geometry.addAttribute( 'morphTarget' + i, morphAttributes.position[ index ] );
+					if ( material.morphNormals === true && morphAttributes.normal ) geometry.addAttribute( 'morphNormal' + i, morphAttributes.normal[ index ] );
 
-		// 		} else {
+				} else {
 
-		// 			if ( material.morphTargets === true ) geometry.removeAttribute( 'morphTarget' + i );
-		// 			if ( material.morphNormals === true ) geometry.removeAttribute( 'morphNormal' + i );
+					if ( material.morphTargets === true ) geometry.removeAttribute( 'morphTarget' + i );
+					if ( material.morphNormals === true ) geometry.removeAttribute( 'morphNormal' + i );
 
-		// 		}
+				}
 
-		// 	}
+			}
 
-		// 	for ( var i = activeInfluences.length, il = morphInfluences.length; i < il; i ++ ) {
+			for ( var i = activeInfluences.length, il = morphInfluences.length; i < il; i ++ ) {
 
-		// 		morphInfluences[ i ] = 0.0;
+				morphInfluences[ i ] = 0.0;
 
-		// 	}
+			}
 
-		// 	program.getUniforms().setValue(
-		// 		_gl, 'morphTargetInfluences', morphInfluences );
+			program.getUniforms().setValue(
+				_gl, 'morphTargetInfluences', morphInfluences );
 
-		// 	updateBuffers = true;
+			updateBuffers = true;
 
-		// }
+		}
 
 		//
 
@@ -1579,37 +1579,37 @@ function WebGLRenderer( parameters ) {
 
 		var attributes = program.getAttributes();
 
-		// if ( material.morphTargets ) {
+		if ( material.morphTargets ) {
 
-		// 	material.numSupportedMorphTargets = 0;
+			material.numSupportedMorphTargets = 0;
 
-		// 	for ( var i = 0; i < _this.maxMorphTargets; i ++ ) {
+			for ( var i = 0; i < _this.maxMorphTargets; i ++ ) {
 
-		// 		if ( attributes[ 'morphTarget' + i ] >= 0 ) {
+				if ( attributes[ 'morphTarget' + i ] >= 0 ) {
 
-		// 			material.numSupportedMorphTargets ++;
+					material.numSupportedMorphTargets ++;
 
-		// 		}
+				}
 
-		// 	}
+			}
 
-		// }
+		}
 
-		// if ( material.morphNormals ) {
+		if ( material.morphNormals ) {
 
-		// 	material.numSupportedMorphNormals = 0;
+			material.numSupportedMorphNormals = 0;
 
-		// 	for ( var i = 0; i < _this.maxMorphNormals; i ++ ) {
+			for ( var i = 0; i < _this.maxMorphNormals; i ++ ) {
 
-		// 		if ( attributes[ 'morphNormal' + i ] >= 0 ) {
+				if ( attributes[ 'morphNormal' + i ] >= 0 ) {
 
-		// 			material.numSupportedMorphNormals ++;
+					material.numSupportedMorphNormals ++;
 
-		// 		}
+				}
 
-		// 	}
+			}
 
-		// }
+		}
 
 		var uniforms = materialProperties.__webglShader.uniforms;
 

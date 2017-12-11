@@ -4870,6 +4870,12 @@ var map_particle_fragment = "#ifdef USE_MAP\n\tvec4 mapTexel = texture2D( map, v
 
 var map_particle_pars_fragment = "#ifdef USE_MAP\n\tuniform vec4 offsetRepeat;\n\tuniform sampler2D map;\n#endif\n";
 
+var morphnormal_vertex = "#ifdef USE_MORPHNORMALS\n\tobjectNormal += ( morphNormal0 - normal ) * morphTargetInfluences[ 0 ];\n\tobjectNormal += ( morphNormal1 - normal ) * morphTargetInfluences[ 1 ];\n\tobjectNormal += ( morphNormal2 - normal ) * morphTargetInfluences[ 2 ];\n\tobjectNormal += ( morphNormal3 - normal ) * morphTargetInfluences[ 3 ];\n#endif\n";
+
+var morphtarget_pars_vertex = "#ifdef USE_MORPHTARGETS\n\t#ifndef USE_MORPHNORMALS\n\tuniform float morphTargetInfluences[ 8 ];\n\t#else\n\tuniform float morphTargetInfluences[ 4 ];\n\t#endif\n#endif";
+
+var morphtarget_vertex = "#ifdef USE_MORPHTARGETS\n\ttransformed += ( morphTarget0 - position ) * morphTargetInfluences[ 0 ];\n\ttransformed += ( morphTarget1 - position ) * morphTargetInfluences[ 1 ];\n\ttransformed += ( morphTarget2 - position ) * morphTargetInfluences[ 2 ];\n\ttransformed += ( morphTarget3 - position ) * morphTargetInfluences[ 3 ];\n\t#ifndef USE_MORPHNORMALS\n\ttransformed += ( morphTarget4 - position ) * morphTargetInfluences[ 4 ];\n\ttransformed += ( morphTarget5 - position ) * morphTargetInfluences[ 5 ];\n\ttransformed += ( morphTarget6 - position ) * morphTargetInfluences[ 6 ];\n\ttransformed += ( morphTarget7 - position ) * morphTargetInfluences[ 7 ];\n\t#endif\n#endif\n";
+
 var normal_flip = "#ifdef DOUBLE_SIDED\n\tfloat flipNormal = ( float( gl_FrontFacing ) * 2.0 - 1.0 );\n#else\n\tfloat flipNormal = 1.0;\n#endif\n";
 
 var normal_fragment = "#ifdef FLAT_SHADED\n\tvec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );\n\tvec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );\n\tvec3 normal = normalize( cross( fdx, fdy ) );\n#else\n\tvec3 normal = normalize( vNormal ) * flipNormal;\n#endif\n#ifdef USE_NORMALMAP\n\tnormal = perturbNormal2Arb( -vViewPosition, normal );\n#elif defined( USE_BUMPMAP )\n\tnormal = perturbNormalArb( -vViewPosition, normal, dHdxy_fwd() );\n#endif\n";
@@ -4894,7 +4900,7 @@ var worldpos_vertex = "#if defined( USE_ENVMAP ) || defined( PHONG ) || defined(
 
 var meshbasic_frag = "uniform vec3 diffuse;\nuniform float opacity;\n#ifndef FLAT_SHADED\n\tvarying vec3 vNormal;\n#endif\n#include <common>\n#include <color_pars_fragment>\n#include <uv_pars_fragment>\n#include <uv2_pars_fragment>\n#include <map_pars_fragment>\nvoid main() {\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\t#include <map_fragment>\n\t#include <color_fragment>\n\t#include <alphatest_fragment>\n\tReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );\n\t\treflectedLight.indirectDiffuse += vec3( 1.0 );\n\treflectedLight.indirectDiffuse *= diffuseColor.rgb;\n\tvec3 outgoingLight = reflectedLight.indirectDiffuse;\n\t#include <normal_flip>\n\tgl_FragColor = vec4( outgoingLight, diffuseColor.a );\n\t#include <premultiplied_alpha_fragment>\n}\n";
 
-var meshbasic_vert = "#include <common>\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <uv2_vertex>\n\t#include <beginnormal_vertex>\n\t#include <defaultnormal_vertex>\n\t#include <begin_vertex>\n\t#include <project_vertex>\n\t#include <worldpos_vertex>\n}\n";
+var meshbasic_vert = "#include <common>\n#include <uv_pars_vertex>\n#include <uv2_pars_vertex>\n#include <morphtarget_pars_vertex>\nvoid main() {\n\t#include <uv_vertex>\n\t#include <uv2_vertex>\n\t#include <beginnormal_vertex>\n\t#include <morphnormal_vertex>\n\t#include <defaultnormal_vertex>\n\t#include <begin_vertex>\n\t#include <morphtarget_vertex>\n\t#include <project_vertex>\n\t#include <worldpos_vertex>\n}\n";
 
 var points_frag = "uniform vec3 diffuse;\nuniform float opacity;\n#include <common>\n#include <color_pars_fragment>\n#include <map_particle_pars_fragment>\nvoid main() {\n\tvec3 outgoingLight = vec3( 0.0 );\n\tvec4 diffuseColor = vec4( diffuse, opacity );\n\t#include <map_particle_fragment>\n\t#include <color_fragment>\n\t#include <alphatest_fragment>\n\toutgoingLight = diffuseColor.rgb;\n\tgl_FragColor = vec4( outgoingLight, diffuseColor.a );\n\t#include <premultiplied_alpha_fragment>\n}\n";
 
@@ -4941,9 +4947,6 @@ var points_vert = "uniform float size;\nuniform float scale;\n#include <common>\
 // import logdepthbuf_vertex from './ShaderChunk/logdepthbuf_vertex.glsl';
 // import metalnessmap_fragment from './ShaderChunk/metalnessmap_fragment.glsl';
 // import metalnessmap_pars_fragment from './ShaderChunk/metalnessmap_pars_fragment.glsl';
-// import morphnormal_vertex from './ShaderChunk/morphnormal_vertex.glsl';
-// import morphtarget_pars_vertex from './ShaderChunk/morphtarget_pars_vertex.glsl';
-// import morphtarget_vertex from './ShaderChunk/morphtarget_vertex.glsl';
 // import normalmap_pars_fragment from './ShaderChunk/normalmap_pars_fragment.glsl';
 // import packing from './ShaderChunk/packing.glsl';
 // import roughnessmap_fragment from './ShaderChunk/roughnessmap_fragment.glsl';
@@ -5036,9 +5039,9 @@ var ShaderChunk = {
 	map_particle_pars_fragment: map_particle_pars_fragment,
 	// metalnessmap_fragment: metalnessmap_fragment,
 	// metalnessmap_pars_fragment: metalnessmap_pars_fragment,
-	// morphnormal_vertex: morphnormal_vertex,
-	// morphtarget_pars_vertex: morphtarget_pars_vertex,
-	// morphtarget_vertex: morphtarget_vertex,
+	morphnormal_vertex: morphnormal_vertex,
+	morphtarget_pars_vertex: morphtarget_pars_vertex,
+	morphtarget_vertex: morphtarget_vertex,
 	normal_flip: normal_flip,
 	normal_fragment: normal_fragment,
 	// normalmap_pars_fragment: normalmap_pars_fragment,
@@ -13107,17 +13110,53 @@ Mesh.prototype = Object.assign( Object.create( Object3D.prototype ), {
 
 	updateMorphTargets: function () {
 
-		var morphTargets = this.geometry.morphTargets;
+		var geometry = this.geometry;
+		var m, ml, name;
 
-		if ( morphTargets !== undefined && morphTargets.length > 0 ) {
+		if ( geometry.isBufferGeometry ) {
 
-			this.morphTargetInfluences = [];
-			this.morphTargetDictionary = {};
+			var morphAttributes = geometry.morphAttributes;
+			var keys = Object.keys( morphAttributes );
 
-			for ( var m = 0, ml = morphTargets.length; m < ml; m ++ ) {
+			if ( keys.length > 0 ) {
 
-				this.morphTargetInfluences.push( 0 );
-				this.morphTargetDictionary[ morphTargets[ m ].name ] = m;
+				var morphAttribute = morphAttributes[ keys[ 0 ] ];
+
+				if ( morphAttribute !== undefined ) {
+
+					this.morphTargetInfluences = [];
+					this.morphTargetDictionary = {};
+
+					for ( m = 0, ml = morphAttribute.length; m < ml; m ++ ) {
+
+						name = morphAttribute[ m ].name || String( m );
+
+						this.morphTargetInfluences.push( 0 );
+						this.morphTargetDictionary[ name ] = m;
+
+					}
+
+				}
+
+			}
+
+		} else {
+
+			var morphTargets = geometry.morphTargets;
+
+			if ( morphTargets !== undefined && morphTargets.length > 0 ) {
+
+				this.morphTargetInfluences = [];
+				this.morphTargetDictionary = {};
+
+				for ( m = 0, ml = morphTargets.length; m < ml; m ++ ) {
+
+					name = morphTargets[ m ].name || String( m );
+
+					this.morphTargetInfluences.push( 0 );
+					this.morphTargetDictionary[ name ] = m;
+
+				}
 
 			}
 
@@ -14033,8 +14072,8 @@ function WebGLProgram( renderer, code, material, parameters ) {
 			// parameters.skinning ? '#define USE_SKINNING' : '',
 			// parameters.useVertexTexture ? '#define BONE_TEXTURE' : '',
 
-			// parameters.morphTargets ? '#define USE_MORPHTARGETS' : '',
-			// parameters.morphNormals && parameters.flatShading === false ? '#define USE_MORPHNORMALS' : '',
+			parameters.morphTargets ? '#define USE_MORPHTARGETS' : '',
+			parameters.morphNormals && parameters.flatShading === false ? '#define USE_MORPHNORMALS' : '',
 			parameters.doubleSided ? '#define DOUBLE_SIDED' : '',
 			parameters.flipSided ? '#define FLIP_SIDED' : '',
 
@@ -14065,12 +14104,12 @@ function WebGLProgram( renderer, code, material, parameters ) {
 
 			'#endif',
 
-			// '#ifdef USE_MORPHTARGETS',
+			'#ifdef USE_MORPHTARGETS',
 
-			// '	attribute vec3 morphTarget0;',
-			// '	attribute vec3 morphTarget1;',
-			// '	attribute vec3 morphTarget2;',
-			// '	attribute vec3 morphTarget3;',
+			'	attribute vec3 morphTarget0;',
+			'	attribute vec3 morphTarget1;',
+			'	attribute vec3 morphTarget2;',
+			'	attribute vec3 morphTarget3;',
 
 			// '	#ifdef USE_MORPHNORMALS',
 
@@ -14081,14 +14120,14 @@ function WebGLProgram( renderer, code, material, parameters ) {
 
 			// '	#else',
 
-			// '		attribute vec3 morphTarget4;',
-			// '		attribute vec3 morphTarget5;',
-			// '		attribute vec3 morphTarget6;',
-			// '		attribute vec3 morphTarget7;',
+			'		attribute vec3 morphTarget4;',
+			'		attribute vec3 morphTarget5;',
+			'		attribute vec3 morphTarget6;',
+			'		attribute vec3 morphTarget7;',
 
 			// '	#endif',
 
-			// '#endif',
+			'#endif',
 
 			// '#ifdef USE_SKINNING',
 
@@ -18041,64 +18080,64 @@ function WebGLRenderer( parameters ) {
 
 		}
 
-		// // morph targets
+		// morph targets
 
-		// var morphTargetInfluences = object.morphTargetInfluences;
+		var morphTargetInfluences = object.morphTargetInfluences;
 
-		// if ( morphTargetInfluences !== undefined ) {
+		if ( morphTargetInfluences !== undefined ) {
 
-		// 	var activeInfluences = [];
+			var activeInfluences = [];
 
-		// 	for ( var i = 0, l = morphTargetInfluences.length; i < l; i ++ ) {
+			for ( var i = 0, l = morphTargetInfluences.length; i < l; i ++ ) {
 
-		// 		var influence = morphTargetInfluences[ i ];
-		// 		activeInfluences.push( [ influence, i ] );
+				var influence = morphTargetInfluences[ i ];
+				activeInfluences.push( [ influence, i ] );
 
-		// 	}
+			}
 
-		// 	activeInfluences.sort( absNumericalSort );
+			activeInfluences.sort( absNumericalSort );
 
-		// 	if ( activeInfluences.length > 8 ) {
+			if ( activeInfluences.length > 8 ) {
 
-		// 		activeInfluences.length = 8;
+				activeInfluences.length = 8;
 
-		// 	}
+			}
 
-		// 	var morphAttributes = geometry.morphAttributes;
+			var morphAttributes = geometry.morphAttributes;
 
-		// 	for ( var i = 0, l = activeInfluences.length; i < l; i ++ ) {
+			for ( var i = 0, l = activeInfluences.length; i < l; i ++ ) {
 
-		// 		var influence = activeInfluences[ i ];
-		// 		morphInfluences[ i ] = influence[ 0 ];
+				var influence = activeInfluences[ i ];
+				morphInfluences[ i ] = influence[ 0 ];
 
-		// 		if ( influence[ 0 ] !== 0 ) {
+				if ( influence[ 0 ] !== 0 ) {
 
-		// 			var index = influence[ 1 ];
+					var index = influence[ 1 ];
 
-		// 			if ( material.morphTargets === true && morphAttributes.position ) geometry.addAttribute( 'morphTarget' + i, morphAttributes.position[ index ] );
-		// 			if ( material.morphNormals === true && morphAttributes.normal ) geometry.addAttribute( 'morphNormal' + i, morphAttributes.normal[ index ] );
+					if ( material.morphTargets === true && morphAttributes.position ) geometry.addAttribute( 'morphTarget' + i, morphAttributes.position[ index ] );
+					if ( material.morphNormals === true && morphAttributes.normal ) geometry.addAttribute( 'morphNormal' + i, morphAttributes.normal[ index ] );
 
-		// 		} else {
+				} else {
 
-		// 			if ( material.morphTargets === true ) geometry.removeAttribute( 'morphTarget' + i );
-		// 			if ( material.morphNormals === true ) geometry.removeAttribute( 'morphNormal' + i );
+					if ( material.morphTargets === true ) geometry.removeAttribute( 'morphTarget' + i );
+					if ( material.morphNormals === true ) geometry.removeAttribute( 'morphNormal' + i );
 
-		// 		}
+				}
 
-		// 	}
+			}
 
-		// 	for ( var i = activeInfluences.length, il = morphInfluences.length; i < il; i ++ ) {
+			for ( var i = activeInfluences.length, il = morphInfluences.length; i < il; i ++ ) {
 
-		// 		morphInfluences[ i ] = 0.0;
+				morphInfluences[ i ] = 0.0;
 
-		// 	}
+			}
 
-		// 	program.getUniforms().setValue(
-		// 		_gl, 'morphTargetInfluences', morphInfluences );
+			program.getUniforms().setValue(
+				_gl, 'morphTargetInfluences', morphInfluences );
 
-		// 	updateBuffers = true;
+			updateBuffers = true;
 
-		// }
+		}
 
 		//
 
@@ -18931,37 +18970,37 @@ function WebGLRenderer( parameters ) {
 
 		var attributes = program.getAttributes();
 
-		// if ( material.morphTargets ) {
+		if ( material.morphTargets ) {
 
-		// 	material.numSupportedMorphTargets = 0;
+			material.numSupportedMorphTargets = 0;
 
-		// 	for ( var i = 0; i < _this.maxMorphTargets; i ++ ) {
+			for ( var i = 0; i < _this.maxMorphTargets; i ++ ) {
 
-		// 		if ( attributes[ 'morphTarget' + i ] >= 0 ) {
+				if ( attributes[ 'morphTarget' + i ] >= 0 ) {
 
-		// 			material.numSupportedMorphTargets ++;
+					material.numSupportedMorphTargets ++;
 
-		// 		}
+				}
 
-		// 	}
+			}
 
-		// }
+		}
 
-		// if ( material.morphNormals ) {
+		if ( material.morphNormals ) {
 
-		// 	material.numSupportedMorphNormals = 0;
+			material.numSupportedMorphNormals = 0;
 
-		// 	for ( var i = 0; i < _this.maxMorphNormals; i ++ ) {
+			for ( var i = 0; i < _this.maxMorphNormals; i ++ ) {
 
-		// 		if ( attributes[ 'morphNormal' + i ] >= 0 ) {
+				if ( attributes[ 'morphNormal' + i ] >= 0 ) {
 
-		// 			material.numSupportedMorphNormals ++;
+					material.numSupportedMorphNormals ++;
 
-		// 		}
+				}
 
-		// 	}
+			}
 
-		// }
+		}
 
 		var uniforms = materialProperties.__webglShader.uniforms;
 
